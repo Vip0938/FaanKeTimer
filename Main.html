@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vip0938's Cloud Storage</title>
+    <title>Vip0938's Cloud Timer</title>
     <style>
         * {
             margin: 0;
@@ -20,13 +20,14 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            padding: 2rem;
+            padding: 1rem;
             text-align: center;
             overflow-x: hidden;
         }
         
         .container {
-            max-width: 900px;
+            width: 100%;
+            max-width: 1000px;
             margin: 0 auto;
             position: relative;
             z-index: 1;
@@ -72,7 +73,7 @@
             line-height: 1.6;
             color: #a0a0a0;
             margin-bottom: 3.5rem;
-            max-width: 600px;
+            max-width: 700px;
             margin-left: auto;
             margin-right: auto;
             font-weight: 400;
@@ -82,7 +83,7 @@
             background: linear-gradient(135deg, #ffffff 0%, #888888 100%);
             color: #000;
             border: none;
-            padding: 1rem 3rem;
+            padding: 1rem 2rem;
             font-size: 1.1rem;
             border-radius: 30px;
             cursor: pointer;
@@ -92,6 +93,8 @@
             position: relative;
             overflow: hidden;
             box-shadow: 0 6px 30px rgba(255, 255, 255, 0.1);
+            white-space: nowrap;
+            min-width: 120px;
         }
         
         .btn:hover {
@@ -119,6 +122,8 @@
             color: #555;
             font-size: 0.9rem;
             letter-spacing: 0.01em;
+            width: 100%;
+            text-align: center;
         }
         
         .decorative-line {
@@ -132,6 +137,7 @@
         /* Plans UI Styling */
         .main-view, .plans-view, .key-view, .redirect-view {
             transition: opacity 0.7s ease, transform 0.7s ease;
+            width: 100%;
         }
         
         .plans-view, .key-view, .redirect-view {
@@ -145,23 +151,26 @@
             z-index: 5;
         }
         
-.plans-container {
-    display: flex;
-    justify-content: space-between; /* Change from center to space-between */
-    margin-top: 2rem;
-    flex-wrap: nowrap; /* Prevent wrapping */
-}
+        .plans-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            width: 100%;
+            flex-wrap: wrap;
+        }
 
-.plan-card {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 20px;
-    padding: 2.5rem 2rem;
-    width: 320px; /* Ensure a fixed width */
-    text-align: center;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+        .plan-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 350px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
         
         .plan-card:hover {
             transform: translateY(-10px);
@@ -184,6 +193,11 @@
             background-clip: text;
         }
         
+        .plan-subtitle {
+            color: #a0a0a0;
+            margin-bottom: 1rem;
+        }
+        
         .pro-card {
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.03) 100%);
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -193,7 +207,8 @@
             margin: 2rem 0;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: flex-start;
+            padding-left: 1rem;
         }
         
         .feature-item {
@@ -201,6 +216,8 @@
             align-items: center;
             margin-bottom: 1rem;
             color: #a0a0a0;
+            width: 100%;
+            text-align: left;
         }
         
         .feature-icon {
@@ -210,6 +227,7 @@
             justify-content: center;
             width: 22px;
             height: 22px;
+            flex-shrink: 0;
         }
         
         .feature-icon.tick {
@@ -222,6 +240,7 @@
         
         .feature-text {
             font-size: 1rem;
+            white-space: normal;
         }
         
         .plan-btn {
@@ -252,7 +271,8 @@
         .key-input-container {
             background: rgba(255, 255, 255, 0.05);
             border-radius: 20px;
-            padding: 2.5rem;
+            padding: 2rem;
+            width: 100%;
             max-width: 500px;
             margin: 2rem auto;
             backdrop-filter: blur(10px);
@@ -278,14 +298,16 @@
         
         .key-buttons {
             display: flex;
-            gap: 1rem;
             justify-content: center;
+            gap: 1rem;
+            width: 100%;
         }
         
         .key-btn {
             flex: 1;
-            padding: 0.8rem;
+            max-width: 150px;
             font-size: 1rem;
+            padding: 1rem 1.5rem;
         }
         
         .error-message {
@@ -300,6 +322,7 @@
             background: rgba(255, 255, 255, 0.05);
             border-radius: 20px;
             padding: 2.5rem;
+            width: 100%;
             max-width: 600px;
             margin: 2rem auto;
             backdrop-filter: blur(10px);
@@ -316,21 +339,88 @@
             background-clip: text;
         }
 
-        @media (max-width: 768px) {
+        /* Mobile Optimizations */
+        @media (max-width: 991px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
             h1 {
                 font-size: 2.8rem;
             }
             
-            p {
-                font-size: 1.1rem;
-            }
-            
             .plans-container {
-                gap: 2rem;
+                flex-direction: column;
+                align-items: center;
             }
             
             .plan-card {
                 width: 100%;
+                max-width: 450px;
+            }
+        }
+
+        @media (max-width: 767px) {
+            body {
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            p {
+                font-size: 1.1rem;
+                margin-bottom: 2.5rem;
+            }
+            
+            .key-buttons {
+                flex-direction: row;
+            }
+            
+            .key-btn {
+                width: 100%;
+                max-width: none;
+            }
+            
+            .btn {
+                font-size: 1rem;
+                padding: 0.9rem 1.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .key-input-container {
+                padding: 1.5rem;
+            }
+            
+            .key-buttons {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+            
+            .key-btn {
+                width: 100%;
+                max-width: none;
+            }
+            
+            .plan-price {
+                font-size: 2rem;
+            }
+            
+            .feature-text {
+                font-size: 0.9rem;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 200px;
+                margin-left: auto;
+                margin-right: auto;
             }
         }
     </style>
@@ -345,12 +435,11 @@
             <h1>Vip0938's Cloud Storage</h1>
             <div class="decorative-line"></div>
             <p>
-                Elevate your digital experience with seamless cloud solutions. 
-                Store, sync, and access your files with uncompromising security and elegant simplicity.
+                Elevate your productivity with a timer app that blends uncompromising functionality with elegant simplicity.
             </p>
             <button class="btn" id="getStartedBtn">Get Started</button>
             <div class="footer">
-                © 2025 Vip0938's Cloud Storage. All rights reserved.
+                © 2025 Vip0938. All rights reserved.
             </div>
         </div>
         
@@ -512,12 +601,12 @@
                         </div>
                     </div>
                     
-                    <button class="btn plan-btn" id="proBtn">$0.99/1yr</button>
+                    <button class="btn plan-btn" id="proBtn">Get Pro</button>
                 </div>
             </div>
             
             <div class="footer">
-                © 2025 Vip0938's Cloud Storage. All rights reserved.
+                © 2025 Vip0938. All rights reserved.
             </div>
         </div>
         
@@ -534,7 +623,7 @@
             <div class="decorative-line"></div>
             
             <div class="key-input-container">
-                <p>Please enter your product key to activate the Pro version.</p>
+                <p style="margin-bottom: 1.5rem;">Please enter your product key to activate the Pro version.</p>
                 <input type="text" class="key-input" id="keyInput" placeholder="Enter your product key here">
                 
                 <div class="key-buttons">
