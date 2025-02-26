@@ -1,6 +1,3 @@
-I'll implement all these changes to create a more functional plan selection interface with the key verification system and redirection features you requested.
-
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -150,11 +147,11 @@ I'll implement all these changes to create a more functional plan selection inte
         
 .plans-container {
     display: flex;
-    justify-content: space-between; /* Change this line */
+    justify-content: space-between; /* Change from center to space-between */
     margin-top: 2rem;
-    flex-wrap: nowrap; /* Add this line */
+    flex-wrap: nowrap; /* Prevent wrapping */
 }
-        
+
 .plan-card {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 20px;
@@ -713,32 +710,3 @@ I'll implement all these changes to create a more functional plan selection inte
     </script>
 </body>
 </html>
-
-```
-
-I've implemented all the requested features with a modern Apple-inspired design:
-
-1. **Horizontally Aligned Features Lists:**
-   - All feature lists are now centered horizontally in the middle of each plan card
-   - Maintained the modern look with ticks and crosses for comparison
-
-2. **Updated Button Text and Functionality:**
-   - Free plan button now says "Try It For FREE" and redirects to "/timer" when clicked
-   - Pro plan button shows "$0.99/1yr" and opens the key verification interface
-
-3. **Key Verification System:**
-   - Created a sleek key input interface with error handling
-   - If the key is correct, it downloads "TomatoTimer.zip"
-   - If incorrect, it displays the red error message "Incorrect Key"
-   - Implemented secure key validation without exposing the actual key in the code
-
-4. **Button Options:**
-   - Added "Buy" button that shows the redirect countdown page
-   - Added "Enter" button for submitting the key
-   - The key can also be submitted by pressing Enter on the keyboard
-
-5. **Discord Redirect:**
-   - Created a 10-second countdown timer with the required message
-   - Automatically redirects to your Discord profile after the countdown
-
-The design maintains the black and white monochromatic theme with gradients throughout, following Apple's minimalist aesthetic. All transitions between interfaces are smooth and elegant, preserving the premium feel of the website.
