@@ -500,20 +500,20 @@
       
       <div class="music-tracks">
         <div class="music-track" data-track="1">
-          <div class="track-icon">🎹</div>
-          <div class="track-name">Lo-Fi Study</div>
+          <div class="track-icon">🎵</div>
+          <div class="track-name">Soundtrack #1</div>
           <div class="track-status"></div>
         </div>
         
         <div class="music-track" data-track="2">
-          <div class="track-icon">🎸</div>
-          <div class="track-name">Acoustic Ambient</div>
+          <div class="track-icon">🎵</div>
+          <div class="track-name">Soundtrack #2</div>
           <div class="track-status"></div>
         </div>
         
         <div class="music-track" data-track="3">
-          <div class="track-icon">🎻</div>
-          <div class="track-name">Classical Focus</div>
+          <div class="track-icon">🎵</div>
+          <div class="track-name">Soundtrack #3</div>
           <div class="track-status"></div>
         </div>
       </div>
@@ -736,6 +736,14 @@
       clearInterval(timer);
       isRunning = false;
       
+      // Stop the music when resetting the timer
+      if (isMusicPlaying) {
+        pauseMusic();
+        isMusicPlaying = false;
+        musicStatusDot.classList.remove('active');
+        musicStatusText.textContent = 'Music off';
+      }
+      
       // Reset to work mode
       isWorkMode = true;
       body.classList.remove('break-mode');
@@ -934,7 +942,7 @@
         backgroundMusicPlayer.src = musicTracks[currentTrack];
         
         // Update status text
-        const trackNames = ['Lo-Fi Study', 'Acoustic Ambient', 'Classical Focus'];
+        const trackNames = ['Soundtrack #1', 'Soundtrack #2', 'Soundtrack #3'];
         musicStatusText.textContent = wasPlaying ? `${trackNames[currentTrack-1]} playing` : `${trackNames[currentTrack-1]} ready`;
       }
       
@@ -981,7 +989,7 @@
       if (isCustomMusic) {
         musicStatusText.textContent = 'Custom music playing';
       } else {
-        const trackNames = ['Lo-Fi Study', 'Acoustic Ambient', 'Classical Focus'];
+        const trackNames = ['Soundtrack #1', 'Soundtrack #2', 'Soundtrack #3'];
         musicStatusText.textContent = `${trackNames[currentTrack-1]} playing`;
       }
     }
@@ -998,7 +1006,7 @@
       if (isCustomMusic) {
         musicStatusText.textContent = 'Custom music paused';
       } else {
-        const trackNames = ['Lo-Fi Study', 'Acoustic Ambient', 'Classical Focus'];
+        const trackNames = ['Soundtrack #1', 'Soundtrack #2', 'Soundtrack #3'];
         musicStatusText.textContent = `${trackNames[currentTrack-1]} paused`;
       }
     }
