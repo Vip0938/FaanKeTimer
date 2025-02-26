@@ -1,3 +1,5 @@
+/* This code is protected under 2 licenses, if you have found stealing this code we will take legal actions */
+
 <!DOCTYPE html>
 <html lang="en">
 <nav>
@@ -755,12 +757,6 @@
         // Function to validate the product key
         function validateKey() {
             const key = keyInput.value.trim();
-            
-            // Decrypt the encrypted key and check if it matches
-            // Encrypted: "oe/1Q9fCeUd0ktNb0URscA=="
-            // Secret Key: "ClaudeEncrypted"
-            // Actual Key: "Jeremy0216"
-            
             if (checkEncryptedKey(key)) {
                 // Download TomatoTimer.zip file
                 downloadFile("TomatoTimer.zip");
@@ -776,21 +772,11 @@
         
         // Function to check if the key is correct (simulated encryption verification)
         function checkEncryptedKey(inputKey) {
-            // This is a simulation of checking against the encrypted key
-            // In real implementation, you would decrypt "oe/1Q9fCeUd0ktNb0URscA==" using "ClaudeEncrypted"
-            // and compare with the input
-            
-            // For security reasons, we're not including the actual key in this code
-            // Instead, we're using a function that validates the input against expected values
-            
-            // This is a secure way to check the key without exposing the actual key in the code
             return inputKey === atob("SmVyZW15MDIxNg==");
         }
         
         // Function to download the file
         function downloadFile(filename) {
-            // In a real implementation, this would download the actual file
-            // For demo purposes, we create a mock download
             const element = document.createElement('a');
             element.setAttribute('href', 'data:application/zip;charset=utf-8,');
             element.setAttribute('download', filename);
