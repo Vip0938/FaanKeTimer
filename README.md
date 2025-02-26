@@ -1,4 +1,4 @@
-# The Tomato Timer
+# The Tomato Timer (License Protected)
 
 ### Made by Vip0938
 
@@ -16,6 +16,5 @@ The Tomato Timer is a minimalist productivity tool designed to help you manage y
 
 ## Installation
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/Vip0938/the-tomato-timer.git
+You are not allowed to install the files for any use without the owner's permission, read LICENSE_Extended for more information.
+
