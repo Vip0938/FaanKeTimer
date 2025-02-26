@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vip0938's Cloud Storage</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #000;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem;
+            text-align: center;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .background-blur {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0) 70%);
+            top: -300px;
+            right: -300px;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+        }
+        
+        .background-blur-2 {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, rgba(0,0,0,0) 70%);
+            bottom: -250px;
+            left: -250px;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #ffffff 0%, #aaaaaa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.03em;
+        }
+        
+        p {
+            font-size: 1.25rem;
+            line-height: 1.6;
+            color: #a0a0a0;
+            margin-bottom: 3.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: 400;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #ffffff 0%, #888888 100%);
+            color: #000;
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1.1rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 6px 30px rgba(255, 255, 255, 0.1);
+        }
+        
+        .btn:hover {
+            box-shadow: 0 8px 40px rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+        
+        .btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+            transition: all 0.6s ease;
+        }
+        
+        .btn:hover:before {
+            left: 100%;
+        }
+        
+        .footer {
+            margin-top: 7rem;
+            color: #555;
+            font-size: 0.9rem;
+            letter-spacing: 0.01em;
+        }
+        
+        .decorative-line {
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.1) 100%);
+            margin: 0 auto 2.5rem auto;
+            border-radius: 3px;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.8rem;
+            }
+            
+            p {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-blur"></div>
+    <div class="background-blur-2"></div>
+    
+    <div class="container">
+        <h1>Vip0938's Cloud Storage</h1>
+        <div class="decorative-line"></div>
+        <p>
+            Elevate your digital experience with seamless cloud solutions. 
+            Store, sync, and access your files with uncompromising security and elegant simplicity.
+        </p>
+        <button class="btn">Get Started</button>
+        <div class="footer">
+            © 2025 Vip0938's Cloud Storage. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>
