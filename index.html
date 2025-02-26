@@ -1,1113 +1,798 @@
-<!DOCTYPE html>
+<!-- This code is protected under 2 licenses, if you have found stealing this code we will take legal actions (UPD) -->
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pomodoro Timer</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    }
-    
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      background-color: #f5f5f5;
-      transition: background-color 0.5s ease;
-    }
-    
-    body.work-mode {
-      background-color: #ffedeb;
-    }
-    
-    body.break-mode {
-      background-color: #ebf9ff;
-    }
-    
-    .container {
-      width: 90%;
-      max-width: 500px;
-      text-align: center;
-      background-color: white;
-      padding: 2rem;
-      border-radius: 24px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-      transition: transform 0.3s ease;
-      position: relative;
-    }
-    
-    .timer-display {
-      font-size: 6rem;
-      font-weight: 300;
-      color: #333;
-      margin: 2rem 0;
-      transition: color 0.3s ease;
-      cursor: pointer;
-      position: relative;
-    }
-    
-    .timer-display:hover::after {
-      content: "Click to edit";
-      position: absolute;
-      bottom: -1.5rem;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 0.9rem;
-      color: #666;
-      white-space: nowrap;
-    }
-    
-    .timer-display-input {
-      font-size: 6rem;
-      font-weight: 300;
-      width: 3ch;
-      border: none;
-      border-bottom: 2px solid #ddd;
-      text-align: center;
-      background: transparent;
-      color: inherit;
-      outline: none;
-    }
-    
-    .timer-display-input:focus {
-      border-bottom-color: #ff6347;
-    }
-    
-    .work-mode .timer-display {
-      color: #ff6347;
-    }
-    
-    .break-mode .timer-display {
-      color: #4dabf7;
-    }
-    
-    .session-label {
-      font-size: 1.5rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      color: #666;
-      margin-bottom: 1rem;
-      transition: color 0.3s ease;
-    }
-    
-    .work-mode .session-label {
-      color: #ff6347;
-    }
-    
-    .break-mode .session-label {
-      color: #4dabf7;
-    }
-    
-    .progress-container {
-      width: 100%;
-      height: 8px;
-      background-color: #f1f1f1;
-      border-radius: 4px;
-      margin: 1rem 0 2rem;
-      overflow: hidden;
-    }
-    
-    .progress-bar {
-      height: 100%;
-      width: 0%;
-      transition: width 1s linear;
-    }
-    
-    .work-mode .progress-bar {
-      background-color: #ff6347;
-    }
-    
-    .break-mode .progress-bar {
-      background-color: #4dabf7;
-    }
-    
-    .btn-container {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-    }
-    
-    .btn {
-      border: none;
-      padding: 1rem 2rem;
-      border-radius: 50px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1);
-    }
-    
-    .btn:active {
-      transform: translateY(1px);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-    
-    .btn-primary {
-      background-color: #ff6347;
-      color: white;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vip0938's Cloud Timer</title>
+    <!-- Added favicon link -->
+    <link rel="icon" type="image/png" href="Tomato.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #000;
+            color: #fff;
+            min-height: 100vh;
+            padding: 1rem;
+            text-align: center;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start; /* Changed to flex-start */
+        }
 
-    .break-mode .btn-primary {
-      background-color: #4dabf7;
-    }
-    
-    .btn-secondary {
-      background-color: #f1f1f1;
-      color: #666;
-    }
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            min-height: 100vh; /* Key change to prevent collapse */
+        }
+        
+        .background-blur {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0) 70%);
+            top: -300px;
+            right: -300px;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+        }
+        
+        /* Main View */
+        .main-view {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; /* Centered content */
+            min-height: 100vh; /* Ensure full height */
+        }
+        
+        .background-blur-2 {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, rgba(0,0,0,0) 70%);
+            bottom: -250px;
+            left: -250px;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #ffffff 0%, #aaaaaa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.03em;
+        }
+        
+        p {
+            font-size: 1.25rem;
+            line-height: 1.6;
+            color: #a0a0a0;
+            margin-bottom: 3.5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: 400;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #ffffff 0%, #888888 100%);
+            color: #000;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 6px 30px rgba(255, 255, 255, 0.1);
+            white-space: nowrap;
+            min-width: 120px;
+        }
+        
+        .btn:hover {
+            box-shadow: 0 8px 40px rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+        
+        .btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+            transition: all 0.6s ease;
+        }
+        
+        .btn:hover:before {
+            left: 100%;
+        }
+        
+        .footer {
+            margin-top: 7rem;
+            color: #555;
+            font-size: 0.9rem;
+            letter-spacing: 0.01em;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .decorative-line {
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.1) 100%);
+            margin: 0 auto 2.5rem auto;
+            border-radius: 3px;
+        }
 
-    .btn-warning {
-      background-color: #ff6347;
-      color: white;
-    }
+        /* Plans UI Styling */
+        .main-view, .plans-view, .key-view, .redirect-view {
+            transition: opacity 0.7s ease, transform 0.7s ease;
+            width: 100%;
+        }
+        
+        .plans-view, .key-view, .redirect-view {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            opacity: 0;
+            transform: translateY(30px);
+            display: none;
+            z-index: 5;
+        }
+        
+        .plans-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            width: 100%;
+            flex-wrap: wrap;
+        }
 
-    .btn-stop {
-      background-color: #ff3347;
-      color: white;
-    }
-    
-    .controls-toggle {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      display: flex;
-      gap: 0.75rem;
-    }
-    
-    .control-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 1.5rem;
-      color: #666;
-      transition: transform 0.2s ease;
-    }
-    
-    .control-btn:hover {
-      transform: scale(1.1);
-    }
-    
-    .tomato-icon {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
+        .plan-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 350px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .plan-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+        
+        .plan-title {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .plan-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, #aaaaaa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .plan-subtitle {
+            color: #a0a0a0;
+            margin-bottom: 1rem;
+        }
+        
+        .pro-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.03) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .feature-list {
+            margin: 2rem 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding-left: 1rem;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            color: #a0a0a0;
+            width: 100%;
+            text-align: left;
+        }
+        
+        .feature-icon {
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            flex-shrink: 0;
+        }
+        
+        .feature-icon.tick {
+            color: #6fffa0;
+        }
+        
+        .feature-icon.cross {
+            color: #ff6f6f;
+        }
+        
+        .feature-text {
+            font-size: 1rem;
+            white-space: normal;
+        }
+        
+        .plan-btn {
+            width: 100%;
+            margin-top: 1rem;
+        }
+        
+        .back-btn {
+            background: none;
+            border: none;
+            color: #777;
+            cursor: pointer;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+        }
+        
+        .back-btn:hover {
+            color: #fff;
+        }
+        
+        .back-icon {
+            margin-right: 8px;
+        }
 
-    .reset-warning {
-      font-size: 0.8rem;
-      color: #ff6347;
-      margin-top: 0.5rem;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
+        /* Key UI Styling */
+        .key-input-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 500px;
+            margin: 2rem auto;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .key-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 1rem;
+            color: white;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        
+        .key-input:focus {
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .key-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            width: 100%;
+        }
+        
+        .key-btn {
+            flex: 1;
+            max-width: 150px;
+            font-size: 1rem;
+            padding: 1rem 1.5rem;
+        }
+        
+        .error-message {
+            color: #ff6f6f;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            min-height: 20px;
+        }
+        
+        /* Redirect View */
+        .redirect-message {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 600px;
+            margin: 2rem auto;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .redirect-timer {
+            font-size: 2rem;
+            margin: 1.5rem 0;
+            font-weight: bold;
+            background: linear-gradient(135deg, #ffffff 0%, #aaaaaa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
 
-    .reset-warning.visible {
-      opacity: 1;
-    }
-    
-    .pulse {
-      animation: pulse 1s infinite;
-    }
-    
-    .music-panel {
-      position: absolute;
-      top: 3.5rem;
-      right: 1rem;
-      background-color: white;
-      border-radius: 12px;
-      padding: 1.5rem;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      width: 280px;
-      text-align: left;
-      z-index: 10;
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(-10px);
-      transition: all 0.3s ease;
-    }
-    
-    .music-panel.active {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateY(0);
-    }
-    
-    .music-panel h3 {
-      font-size: 1rem;
-      margin-bottom: 1rem;
-      color: #333;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    .music-tracks {
-      margin-bottom: 1.5rem;
-    }
-    
-    .music-track {
-      display: flex;
-      align-items: center;
-      padding: 0.75rem;
-      margin-bottom: 0.5rem;
-      border-radius: 8px;
-      transition: all 0.2s ease;
-      cursor: pointer;
-    }
-    
-    .music-track:hover {
-      background-color: #f5f5f5;
-    }
-    
-    .music-track.active {
-      background-color: #ebf9ff;
-    }
-    
-    .track-icon {
-      margin-right: 0.75rem;
-      font-size: 1.2rem;
-    }
-    
-    .track-name {
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: #333;
-    }
-    
-    .track-status {
-      margin-left: auto;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background-color: transparent;
-      transition: background-color 0.2s ease;
-    }
-    
-    .music-track.active .track-status {
-      background-color: #4dabf7;
-    }
-    
-    .music-option {
-      margin-bottom: 1rem;
-    }
-    
-    .music-radio {
-      display: flex;
-      align-items: center;
-      margin-bottom: 0.5rem;
-    }
-    
-    .music-radio input {
-      margin-right: 0.5rem;
-    }
-    
-    .music-radio label {
-      font-size: 0.9rem;
-      color: #666;
-      cursor: pointer;
-    }
-    
-    .custom-url {
-      width: 100%;
-      padding: 0.5rem;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      margin-top: 0.5rem;
-      display: none;
-    }
-    
-    .custom-url.active {
-      display: block;
-    }
-    
-    .music-controls {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 1rem;
-    }
-    
-    .music-btn {
-      padding: 0.5rem 1rem;
-      font-size: 0.8rem;
-      border-radius: 6px;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    
-    .music-btn.save {
-      background-color: #4dabf7;
-      color: white;
-    }
-    
-    .music-btn.cancel {
-      background-color: #f1f1f1;
-      color: #666;
-    }
-    
-    .music-status {
-      margin-top: 0.8rem;
-      font-size: 0.85rem;
-      color: #666;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    .music-status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background-color: #ddd;
-    }
-    
-    .music-status-dot.active {
-      background-color: #4CAF50;
-    }
-    
-    .volume-control {
-      margin-top: 1rem;
-      width: 100%;
-    }
-    
-    .volume-control label {
-      display: block;
-      font-size: 0.85rem;
-      color: #666;
-      margin-bottom: 0.5rem;
-    }
-    
-    .volume-slider {
-      width: 100%;
-      height: 4px;
-      -webkit-appearance: none;
-      background: #ddd;
-      border-radius: 2px;
-      outline: none;
-    }
-    
-    .volume-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: #4dabf7;
-      cursor: pointer;
-    }
-    
-    .volume-slider::-moz-range-thumb {
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: #4dabf7;
-      cursor: pointer;
-      border: none;
-    }
-    
-    .alarm-status {
-      position: fixed;
-      top: 1rem;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: rgba(255, 99, 71, 0.9);
-      color: white;
-      padding: 0.75rem 1.5rem;
-      border-radius: 50px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      z-index: 100;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-    }
-    
-    .alarm-status.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    
-    .alarm-status-icon {
-      animation: pulse 1s infinite;
-    }
-    
-    @keyframes pulse {
-      0% {
-        transform: scale(1);
-      }
-      50% {
-        transform: scale(1.05);
-      }
-      100% {
-        transform: scale(1);
-      }
-    }
-    
-    @media (max-width: 768px) {
-      .timer-display {
-        font-size: 4.5rem;
-      }
-      
-      .timer-display-input {
-        font-size: 4.5rem;
-      }
-      
-      .session-label {
-        font-size: 1.25rem;
-      }
-      
-      .music-panel {
-        width: 250px;
-      }
-    }
-  </style>
+        /* Mobile Optimizations */
+        @media (max-width: 991px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            h1 {
+                font-size: 2.8rem;
+            }
+            
+            .plans-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .plan-card {
+                width: 100%;
+                max-width: 450px;
+            }
+        }
+
+        @media (max-width: 767px) {
+            body {
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            p {
+                font-size: 1.1rem;
+                margin-bottom: 2.5rem;
+            }
+            
+            .key-buttons {
+                flex-direction: row;
+            }
+            
+            .key-btn {
+                width: 100%;
+                max-width: none;
+            }
+            
+            .btn {
+                font-size: 1rem;
+                padding: 0.9rem 1.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .key-input-container {
+                padding: 1.5rem;
+            }
+            
+            .key-buttons {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+            
+            .key-btn {
+                width: 100%;
+                max-width: none;
+            }
+            
+            .plan-price {
+                font-size: 2rem;
+            }
+            
+            .feature-text {
+                font-size: 0.9rem;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 200px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <div class="tomato-icon">🍅</div>
-    <div class="session-label">Work Session</div>
-    <div class="timer-display" id="timer-display">45:00</div>
-    <div class="progress-container">
-      <div class="progress-bar"></div>
-    </div>
-    <div class="btn-container">
-      <button class="btn btn-primary" id="start-btn">Start</button>
-      <button class="btn btn-secondary" id="reset-btn">Reset</button>
-    </div>
-    <div class="reset-warning" id="reset-warning">Click again to return to work session</div>
+    <div class="background-blur"></div>
+    <div class="background-blur-2"></div>
     
-    <div class="controls-toggle">
-      <button class="control-btn" id="sound-toggle">🔔</button>
-      <button class="control-btn" id="music-toggle">🎵</button>
-    </div>
-    
-    <div class="music-panel" id="music-panel">
-      <h3>🎵 Background Music</h3>
-      
-      <div class="music-tracks">
-        <div class="music-track" data-track="1">
-          <div class="track-icon">🎵</div>
-          <div class="track-name">Soundtrack #1</div>
-          <div class="track-status"></div>
+    <div class="container">
+        <!-- Main View -->
+        <div class="main-view">
+            <h1>Vip0938's Cloud Storage</h1>
+            <div class="decorative-line"></div>
+            <p>
+                Elevate your productivity with a timer app that blends uncompromising functionality with elegant simplicity.
+            </p>
+            <button class="btn" id="getStartedBtn">Get Started</button>
+            <div class="footer">
+                © 2025 Vip0938. All rights reserved.
+            </div>
         </div>
         
-        <div class="music-track" data-track="2">
-          <div class="track-icon">🎵</div>
-          <div class="track-name">Soundtrack #2</div>
-          <div class="track-status"></div>
+        <!-- Plans View -->
+        <div class="plans-view">
+            <button class="back-btn" id="backBtn">
+                <svg class="back-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Back
+            </button>
+            
+            <h1>Choose Your Plan</h1>
+            <div class="decorative-line"></div>
+            
+            <div class="plans-container">
+                <!-- Free Plan -->
+                <div class="plan-card">
+                    <div class="plan-title">Free</div>
+                    <div class="plan-price">$0</div>
+                    <div class="plan-subtitle">Perfect for getting started</div>
+                    
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <div class="feature-icon tick">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 8L6 11L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="feature-text">Seamless Timer</div>
+                        </div>
+                        
+                        <div class="feature-item">
+                            <div class="feature-icon tick">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 8L6 11L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="feature-text">No Ads</div>
+                        </div>
+                        
+                        <div class="feature-item">
+                            <div class="feature-icon tick">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 8L6 11L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="feature-text">Up-To-Date Timer</div>
+                        </div>
+                        
+                        <div class="feature-item">
+                            <div class="feature-icon tick">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 8L6 11L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="feature-text">Custom Music Support</div>
+                        </div>
+                        
+                        <div class="feature-item">
+                            <div class="feature-icon cross">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4 4L12 12M4 12L12 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="feature-text">Offline Support</div>
+                        </div>
+                        
+                        <div class="feature-item">
+                            <div class="feature-icon cross">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4 4L12 12M4 12L12 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="feature-text">Email Updated File Service</div>
+                        </div>
+                        
+                        <div class="feature-item">
+                            <div class="feature-icon cross">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4 4L12 12M4 12L12 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="feature-text">BETA Features</div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn plan-btn" id="freeBtn">Try It For FREE</button>
+                </div>
+                
+                <!-- Pro Plan -->
+                <div class="plan-card pro-card">
+                    <div class="plan-title">Pro</div>
+                    <div class="plan-price">$0.99/1yr</div>
+                    <div class="plan-subtitle">All features unlocked</div>
+                    
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <div class="feature-icon tick">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 8L6 11L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="feature-text">Seamless Timer</div>
+                        </div>
+                        
+                        <div class="feature-item">
+                            <div class="feature-icon tick">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 8L6 11L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="feature-text">No Ads</div>
+                        </div>
+                        
+                        <div class="feature-item">
+                            <div class="feature-icon tick">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 8L6 11L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="feature-text">Up-To-Date Timer</div>
+                        </div>
+                        
+                        <div class="feature-item">
+                            <div class="feature-icon tick">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 8L6 11L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="feature-text">Custom Music Support</div>
+                        </div>
+                        
+                        <div class="feature-item">
+                            <div class="feature-icon tick">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 8L6 11L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="feature-text">Offline Support</div>
+                        </div>
+                        
+                        <div class="feature-item">
+                            <div class="feature-icon tick">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 8L6 11L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="feature-text">Email Updated File Service</div>
+                        </div>
+                        
+                        <div class="feature-item">
+                            <div class="feature-icon tick">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 8L6 11L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="feature-text">BETA Features</div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn plan-btn" id="proBtn">Get Pro</button>
+                </div>
+            </div>
+            
+            <div class="footer">
+                © 2025 Vip0938. All rights reserved.
+            </div>
         </div>
         
-        <div class="music-track" data-track="3">
-          <div class="track-icon">🎵</div>
-          <div class="track-name">Soundtrack #3</div>
-          <div class="track-status"></div>
-        </div>
-      </div>
-      
-      <div class="music-option">
-        <div class="music-radio">
-          <input type="radio" id="custom-music" name="music-type">
-          <label for="custom-music">Custom Music URL</label>
+        <!-- Key View -->
+        <div class="key-view">
+            <button class="back-btn" id="keyBackBtn">
+                <svg class="back-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Back to Plans
+            </button>
+            
+            <h1>Enter Product Key</h1>
+            <div class="decorative-line"></div>
+            
+            <div class="key-input-container">
+                <p style="margin-bottom: 1.5rem;">Please enter your product key to activate the Pro version.</p>
+                <input type="text" class="key-input" id="keyInput" placeholder="Enter your product key here">
+                
+                <div class="key-buttons">
+                    <button class="btn key-btn" id="buyBtn">Buy</button>
+                    <button class="btn key-btn" id="enterBtn">Enter</button>
+                </div>
+                
+                <div class="error-message" id="errorMessage"></div>
+            </div>
+            
+            <div class="footer">
+                © 2025 Vip0938's Cloud Storage. All rights reserved.
+            </div>
         </div>
         
-        <input type="text" class="custom-url" id="custom-url" placeholder="Paste your MP3 URL here">
-      </div>
-      
-      <div class="volume-control">
-        <label>Volume</label>
-        <input type="range" min="0" max="100" value="70" class="volume-slider" id="volume-slider">
-      </div>
-      
-      <div class="music-controls">
-        <button class="music-btn save" id="save-music">Apply</button>
-        <button class="music-btn cancel" id="cancel-music">Close</button>
-      </div>
-      
-      <div class="music-status">
-        <div class="music-status-dot" id="music-status-dot"></div>
-        <span id="music-status-text">Music off</span>
-      </div>
+        <!-- Redirect View -->
+        <div class="redirect-view">
+            <h1>Purchasing Pro Version</h1>
+            <div class="decorative-line"></div>
+            
+            <div class="redirect-message">
+                <p>I'll redirect you to my Discord. Please message me there if you're interested in buying.</p>
+                <div class="redirect-timer" id="redirectTimer">10</div>
+            </div>
+            
+            <div class="footer">
+                © 2025 Vip0938's Cloud Storage. All rights reserved.
+            </div>
+        </div>
     </div>
-  </div>
-  
-  <div class="alarm-status" id="alarm-status">
-    <span class="alarm-status-icon">⏰</span>
-    <span>Time's up!</span>
-    <button class="btn btn-stop" id="stop-alarm-btn">Stop</button>
-  </div>
-
-  <script>
-    const timerDisplay = document.getElementById('timer-display');
-    const sessionLabel = document.querySelector('.session-label');
-    const progressBar = document.querySelector('.progress-bar');
-    const startBtn = document.getElementById('start-btn');
-    const resetBtn = document.getElementById('reset-btn');
-    const resetWarning = document.getElementById('reset-warning');
-    const soundToggle = document.getElementById('sound-toggle');
-    const musicToggle = document.getElementById('music-toggle');
-    const musicPanel = document.getElementById('music-panel');
-    const customMusic = document.getElementById('custom-music');
-    const customUrl = document.getElementById('custom-url');
-    const saveMusic = document.getElementById('save-music');
-    const cancelMusic = document.getElementById('cancel-music');
-    const musicStatusDot = document.getElementById('music-status-dot');
-    const musicStatusText = document.getElementById('music-status-text');
-    const volumeSlider = document.getElementById('volume-slider');
-    const musicTrackElements = document.querySelectorAll('.music-track');
-    const container = document.querySelector('.container');
-    const body = document.body;
-    const alarmStatus = document.getElementById('alarm-status');
-    const stopAlarmBtn = document.getElementById('stop-alarm-btn');
-
-    // Timer variables
-    let timer;
-    let isRunning = false;
-    let workTimeMinutes = 45;
-    let timeLeft = workTimeMinutes * 60; // 45 minutes in seconds
-    let initialTime = timeLeft;
-    let isWorkMode = true;
-    let isSoundEnabled = true;
-    let resetWarningActive = false;
-    let resetTimeout;
-    let isEditingTimer = false;
-    let isAlarmActive = false;
-    let fadeInterval; // For crossfade transitions
     
-    // Music variables
-    let backgroundMusicPlayer = new Audio();
-    let alarmMusicPlayer = new Audio('https://audio.jukehost.co.uk/fgjkDkdrO8xTBD54pTfF4MsZrOuZsRz2.mp3');
-    let isMusicPlaying = false;
-    let currentTrack = 1; // Default to first track
-    let isCustomMusic = false;
-    let musicPanelVisible = false;
-    let volume = 0.7; // Default volume (0-1)
-    
-    // Music tracks
-    const musicTracks = {
-      1: 'https://audio.jukehost.co.uk/SKzwKkgHp8fhUNlGBb6ImrD3FwxbzNjU.mp3',
-      2: 'https://audio.jukehost.co.uk/QfMix1GLc6GtYUnehiPwfwnGGFffCDTd.mp3',
-      3: 'https://audio.jukehost.co.uk/fhQmCqqwqiR3e0irs3mQasMOI255nOIv.mp3'
-    };
-    
-    // Setup music players
-    backgroundMusicPlayer.loop = true;
-    alarmMusicPlayer.loop = true;
-    backgroundMusicPlayer.volume = volume;
-    alarmMusicPlayer.volume = 0;
-
-    // Update timer display
-    function updateDisplay() {
-      const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0');
-      const seconds = (timeLeft % 60).toString().padStart(2, '0');
-      timerDisplay.textContent = `${minutes}:${seconds}`;
-      
-      // Update progress bar
-      const progress = 100 - ((timeLeft / initialTime) * 100);
-      progressBar.style.width = `${progress}%`;
-    }
-
-    // Toggle mode (work/break)
-    function toggleMode() {
-      isWorkMode = !isWorkMode;
-      
-      if (isWorkMode) {
-        timeLeft = workTimeMinutes * 60;
-        initialTime = timeLeft;
-        sessionLabel.textContent = 'Work Session';
-        body.classList.remove('break-mode');
-        body.classList.add('work-mode');
-      } else {
-        // Calculate break time based on 3:1 ratio and round to nearest minute
-        const breakTimeMinutes = Math.round(workTimeMinutes / 3);
-        timeLeft = breakTimeMinutes * 60;
-        initialTime = timeLeft;
-        sessionLabel.textContent = 'Break Time';
-        body.classList.remove('work-mode');
-        body.classList.add('break-mode');
-      }
-      
-      // Always reset to "Start" when transitioning between modes
-      startBtn.textContent = 'Start';
-      isRunning = false;
-      clearInterval(timer);
-      
-      updateDisplay();
-      playAlarm();
-    }
-
-    // Start/pause timer
-    function toggleTimer() {
-      if (isAlarmActive) {
-        stopAlarm();
-      }
-      
-      if (isRunning) {
-        clearInterval(timer);
-        startBtn.textContent = 'Resume';
-        isRunning = false;
+    <script>
+        // DOM Elements
+        const getStartedBtn = document.getElementById('getStartedBtn');
+        const backBtn = document.getElementById('backBtn');
+        const freeBtn = document.getElementById('freeBtn');
+        const proBtn = document.getElementById('proBtn');
+        const keyBackBtn = document.getElementById('keyBackBtn');
+        const buyBtn = document.getElementById('buyBtn');
+        const enterBtn = document.getElementById('enterBtn');
+        const keyInput = document.getElementById('keyInput');
+        const errorMessage = document.getElementById('errorMessage');
+        const redirectTimer = document.getElementById('redirectTimer');
         
-        // Pause music when timer is paused
-        if (isMusicPlaying) {
-          pauseMusic();
-        }
-      } else {
-        startBtn.textContent = 'Pause';
-        isRunning = true;
+        const mainView = document.querySelector('.main-view');
+        const plansView = document.querySelector('.plans-view');
+        const keyView = document.querySelector('.key-view');
+        const redirectView = document.querySelector('.redirect-view');
         
-        if (!body.classList.contains('work-mode') && !body.classList.contains('break-mode')) {
-          body.classList.add('work-mode');
+        // Transition functions
+        function showView(viewToShow, viewToHide, direction = "forward") {
+            // Hide current view
+            viewToHide.style.opacity = '0';
+            viewToHide.style.transform = direction === "forward" ? 'translateY(-30px)' : 'translateY(30px)';
+            
+            setTimeout(() => {
+                viewToHide.style.display = 'none';
+                viewToShow.style.display = 'block';
+                
+                // Force reflow
+                void viewToShow.offsetWidth;
+                
+                // Show new view
+                viewToShow.style.opacity = '1';
+                viewToShow.style.transform = 'translateY(0)';
+            }, 700);
         }
         
-        // Auto-start music when timer starts
-        if (!isMusicPlaying) {
-          playMusic();
-        }
-        
-        timer = setInterval(() => {
-          timeLeft--;
-          updateDisplay();
-          
-          // Start fading out background music when approaching the end (last 2 seconds)
-          if (timeLeft <= 2 && !isAlarmActive && isMusicPlaying) {
-            startMusicFadeOut();
-          }
-          
-          if (timeLeft <= 0) {
-            clearInterval(timer);
-            isRunning = false;
-            showAlarm();
-            toggleMode();
-          }
-        }, 1000);
-      }
-    }
-
-    // Handle reset button click
-    function handleResetClick() {
-      // If alarm is active, stop it
-      if (isAlarmActive) {
-        stopAlarm();
-      }
-      
-      // If in break mode and warning not active, show warning
-      if (!isWorkMode && !resetWarningActive) {
-        resetWarningActive = true;
-        resetBtn.classList.remove('btn-secondary');
-        resetBtn.classList.add('btn-warning');
-        resetWarning.classList.add('visible');
-        
-        // Set timeout to remove warning after 3 seconds
-        resetTimeout = setTimeout(() => {
-          resetWarningActive = false;
-          resetBtn.classList.remove('btn-warning');
-          resetBtn.classList.add('btn-secondary');
-          resetWarning.classList.remove('visible');
-        }, 3000);
-        
-        return;
-      }
-      
-      // Otherwise perform reset
-      clearTimeout(resetTimeout);
-      resetWarningActive = false;
-      resetBtn.classList.remove('btn-warning');
-      resetBtn.classList.add('btn-secondary');
-      resetWarning.classList.remove('visible');
-      
-      resetTimer();
-    }
-
-    // Reset timer
-    function resetTimer() {
-      clearInterval(timer);
-      isRunning = false;
-      
-      // Stop the music when resetting the timer
-      if (isMusicPlaying) {
-        pauseMusic();
-        isMusicPlaying = false;
-        musicStatusDot.classList.remove('active');
-        musicStatusText.textContent = 'Music off';
-      }
-      
-      // Reset to work mode
-      isWorkMode = true;
-      body.classList.remove('break-mode');
-      body.classList.add('work-mode');
-      
-      timeLeft = workTimeMinutes * 60;
-      initialTime = timeLeft;
-      sessionLabel.textContent = 'Work Session';
-      startBtn.textContent = 'Start';
-      
-      updateDisplay();
-    }
-
-    // Start music fade out (crossfade preparation)
-    function startMusicFadeOut() {
-      // Clear any existing fade intervals
-      clearInterval(fadeInterval);
-      
-      // Initialize alarm player but with 0 volume
-      alarmMusicPlayer.volume = 0;
-      
-      // Calculate step size for 1.5s fade (assuming 60fps)
-      const steps = 90; // 60fps * 1.5 seconds
-      const musicStep = backgroundMusicPlayer.volume / steps;
-      const alarmStep = volume / steps;
-      
-      let currentStep = 0;
-      
-      // Start the alarm sound (at volume 0)
-      alarmMusicPlayer.currentTime = 0;
-      alarmMusicPlayer.play().catch(e => console.log("Alarm playback error:", e));
-      
-      // Create the crossfade effect
-      fadeInterval = setInterval(() => {
-        currentStep++;
-        
-        // Fade out background music
-        backgroundMusicPlayer.volume = Math.max(0, backgroundMusicPlayer.volume - musicStep);
-        
-        // Fade in alarm sound
-        alarmMusicPlayer.volume = Math.min(volume, alarmStep * currentStep);
-        
-        // When fade is complete
-        if (currentStep >= steps) {
-          clearInterval(fadeInterval);
-          backgroundMusicPlayer.pause();
-          isAlarmActive = true;
-        }
-      }, 1000 / 60); // 60fps for smooth transition
-    }
-
-    // Play alarm sound (with crossfade already handled)
-    function playAlarm() {
-      if (!isSoundEnabled) return;
-      
-      showAlarm();
-      
-      // If music is fading, let the crossfade complete
-      // Otherwise, instant transition
-      if (!fadeInterval) {
-        // Pause background music if playing
-        if (isMusicPlaying) {
-          backgroundMusicPlayer.pause();
-        }
-        
-        // Play alarm sound
-        alarmMusicPlayer.currentTime = 0;
-        alarmMusicPlayer.volume = volume;
-        alarmMusicPlayer.play().catch(e => console.log("Alarm playback error:", e));
-      }
-      
-      isAlarmActive = true;
-    }
-    
-    // Show alarm notification
-    function showAlarm() {
-      alarmStatus.classList.add('active');
-      container.classList.add('pulse');
-      setTimeout(() => {
-        container.classList.remove('pulse');
-      }, 3000);
-    }
-    
-    // Stop alarm and restore background music
-    function stopAlarm() {
-      // Clear any fade transitions
-      clearInterval(fadeInterval);
-      
-      // Create a quick fade out for alarm
-      const initialVolume = alarmMusicPlayer.volume;
-      const fadeSteps = 30;
-      let step = 0;
-      
-      const quickFade = setInterval(() => {
-        step++;
-        alarmMusicPlayer.volume = initialVolume * (1 - step / fadeSteps);
-        
-        if (step >= fadeSteps) {
-          clearInterval(quickFade);
-          alarmMusicPlayer.pause();
-          alarmMusicPlayer.currentTime = 0;
-          
-          // Restore background music if timer is running
-          if (isRunning && isMusicPlaying) {
-            backgroundMusicPlayer.volume = volume;
-            backgroundMusicPlayer.play().catch(e => console.log("Music playback error:", e));
-          }
-        }
-      }, 16);
-      
-      alarmStatus.classList.remove('active');
-      isAlarmActive = false;
-    }
-
-    // Toggle sound
-    function toggleSound() {
-      isSoundEnabled = !isSoundEnabled;
-      soundToggle.textContent = isSoundEnabled ? '🔔' : '🔕';
-    }
-    
-    // Toggle music panel
-    function toggleMusicPanel() {
-      musicPanelVisible = !musicPanelVisible;
-      
-      if (musicPanelVisible) {
-        musicPanel.classList.add('active');
-        
-        // Update active track in UI
-        updateMusicTracksUI();
-        
-        // Update custom URL field based on current settings
-        if (isCustomMusic) {
-          customMusic.checked = true;
-          customUrl.classList.add('active');
-          customUrl.value = backgroundMusicPlayer.src;
-        } else {
-          customMusic.checked = false;
-          customUrl.classList.remove('active');
-        }
-        
-        // Update volume slider
-        volumeSlider.value = volume * 100;
-      } else {
-        musicPanel.classList.remove('active');
-      }
-    }
-    
-    // Update music tracks UI
-    function updateMusicTracksUI() {
-      musicTrackElements.forEach(track => {
-        const trackId = parseInt(track.dataset.track);
-        if (trackId === currentTrack && !isCustomMusic) {
-          track.classList.add('active');
-        } else {
-          track.classList.remove('active');
-        }
-      });
-    }
-    
-    // Handle music type change
-    function handleMusicTypeChange() {
-      if (customMusic.checked) {
-        customUrl.classList.add('active');
-        isCustomMusic = true;
-        // Remove active class from all track options
-        musicTrackElements.forEach(track => {
-          track.classList.remove('active');
+        // Main to Plans transition
+        getStartedBtn.addEventListener('click', () => {
+            showView(plansView, mainView, "forward");
         });
-      } else {
-        customUrl.classList.remove('active');
-        isCustomMusic = false;
-        updateMusicTracksUI();
-      }
-    }
-    
-    // Save music settings
-    function saveMusicSettings() {
-      const wasPlaying = isMusicPlaying;
-      
-      // If music was playing, stop it temporarily
-      if (wasPlaying) {
-        backgroundMusicPlayer.pause();
-      }
-      
-      if (isCustomMusic) {
-        const urlInput = customUrl.value.trim();
-        if (urlInput) {
-          // Set new source
-          backgroundMusicPlayer.src = urlInput;
-          
-          // Update status text
-          musicStatusText.textContent = wasPlaying ? 'Custom music playing' : 'Music ready';
-        }
-      } else {
-        // Use selected track
-        backgroundMusicPlayer.src = musicTracks[currentTrack];
         
-        // Update status text
-        const trackNames = ['Soundtrack #1', 'Soundtrack #2', 'Soundtrack #3'];
-        musicStatusText.textContent = wasPlaying ? `${trackNames[currentTrack-1]} playing` : `${trackNames[currentTrack-1]} ready`;
-      }
-      
-      // Update volume
-      volume = volumeSlider.value / 100;
-      backgroundMusicPlayer.volume = isAlarmActive ? 0 : volume;
-      
-      // Restart if was playing and timer is still running
-      if (wasPlaying && isRunning) {
-        backgroundMusicPlayer.play().catch(e => console.log("Music playback error:", e));
-        musicStatusDot.classList.add('active');
-        isMusicPlaying = true;
-      }
-      
-      toggleMusicPanel();
-    }
-    
-    // Play background music
-    function playMusic() {
-      if (isMusicPlaying) return;
-      
-      // Set the music source if not already set
-      if (!backgroundMusicPlayer.src || backgroundMusicPlayer.src === 'about:blank') {
-        if (isCustomMusic && customUrl.value.trim()) {
-          backgroundMusicPlayer.src = customUrl.value.trim();
-        } else {
-          backgroundMusicPlayer.src = musicTracks[currentTrack];
+        // Plans to Main transition
+        backBtn.addEventListener('click', () => {
+            showView(mainView, plansView, "backward");
+        });
+        
+        // Free Plan button
+        freeBtn.addEventListener('click', () => {
+            window.location.href = "/timer";
+        });
+        
+        // Pro Plan button
+        proBtn.addEventListener('click', () => {
+            showView(keyView, plansView, "forward");
+        });
+        
+        // Key Back button
+        keyBackBtn.addEventListener('click', () => {
+            showView(plansView, keyView, "backward");
+        });
+        
+        // Buy button
+        buyBtn.addEventListener('click', () => {
+            showView(redirectView, keyView, "forward");
+            startRedirectTimer();
+        });
+        
+        // Enter button for key validation
+        enterBtn.addEventListener('click', validateKey);
+        
+        // Also validate on Enter key press
+        keyInput.addEventListener('keyup', (event) => {
+            if (event.key === "Enter") {
+                validateKey();
+            }
+        });
+        
+        // Function to validate the product key
+        function validateKey() {
+            const key = keyInput.value.trim();
+            if (checkEncryptedKey(key)) {
+                // Download TomatoTimer.zip file
+                downloadFile("TomatoTimer.zip");
+                errorMessage.textContent = "";
+                errorMessage.style.color = "#6fffa0"; // Green color
+                errorMessage.textContent = "Valid key! Downloading file...";
+            } else {
+                // Show error message
+                errorMessage.style.color = "#ff6f6f"; // Red color
+                errorMessage.textContent = "Incorrect Key";
+            }
         }
-      }
-      
-      // Set volume (0 if alarm is playing)
-      backgroundMusicPlayer.volume = isAlarmActive ? 0 : volume;
-      
-      // Play the music
-      backgroundMusicPlayer.play().catch(e => {
-        console.log("Music playback error:", e);
-        return;
-      });
-      
-      isMusicPlaying = true;
-      musicStatusDot.classList.add('active');
-      
-      // Update status text based on music type
-      if (isCustomMusic) {
-        musicStatusText.textContent = 'Custom music playing';
-      } else {
-        const trackNames = ['Soundtrack #1', 'Soundtrack #2', 'Soundtrack #3'];
-        musicStatusText.textContent = `${trackNames[currentTrack-1]} playing`;
-      }
-    }
-    
-    // Stop/pause background music
-    function pauseMusic() {
-      if (!isMusicPlaying) return;
-      
-      backgroundMusicPlayer.pause();
-      isMusicPlaying = false;
-      musicStatusDot.classList.remove('active');
-      
-      // Update status text based on music type
-      if (isCustomMusic) {
-        musicStatusText.textContent = 'Custom music paused';
-      } else {
-        const trackNames = ['Soundtrack #1', 'Soundtrack #2', 'Soundtrack #3'];
-        musicStatusText.textContent = `${trackNames[currentTrack-1]} paused`;
-      }
-    }
-    
-    // Handle timer display click - allow editing the time
-    function handleTimerClick() {
-      if (!isWorkMode || isRunning) return; // Only allow editing in work mode when timer is not running
-      
-      isEditingTimer = true;
-      
-      // Get current minutes
-      const currentMinutes = Math.floor(timeLeft / 60);
-      
-      // Create input field
-      const inputField = document.createElement('input');
-      inputField.type = 'number';
-      inputField.min = 1;
-      inputField.max = 120;
-      inputField.value = currentMinutes;
-      inputField.className = 'timer-display-input';
-      
-      // Replace timer display with input
-      timerDisplay.textContent = '';
-      timerDisplay.appendChild(inputField);
-      inputField.focus();
-      inputField.select();
-      
-      // Handle input completion
-      const completeEdit = () => {
-        if (isEditingTimer) {
-          const newMinutes = parseInt(inputField.value);
-          
-          if (!isNaN(newMinutes) && newMinutes > 0 && newMinutes <= 120) {
-            workTimeMinutes = newMinutes;
-            timeLeft = workTimeMinutes * 60;
-            initialTime = timeLeft;
-            updateDisplay();
-          } else {
-            // Revert to previous value
-            updateDisplay();
-          }
-          
-          isEditingTimer = false;
+        
+        // Function to check if the key is correct (simulated encryption verification)
+        function checkEncryptedKey(inputKey) {
+            return inputKey === atob("SmVyZW15MDIxNg==");
         }
-      };
-      
-      // Event listeners for input
-      inputField.addEventListener('blur', completeEdit);
-      inputField.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          completeEdit();
-        } else if (e.key === 'Escape') {
-          isEditingTimer = false;
-          updateDisplay();
+        
+        // Function to download the file
+        function downloadFile(filename) {
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:application/zip;charset=utf-8,');
+            element.setAttribute('download', filename);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
         }
-      });
-    }
-
-    // Event listeners
-    startBtn.addEventListener('click', toggleTimer);
-    resetBtn.addEventListener('click', handleResetClick);
-    soundToggle.addEventListener('click', toggleSound);
-    musicToggle.addEventListener('click', toggleMusicPanel);
-    customMusic.addEventListener('change', handleMusicTypeChange);
-    saveMusic.addEventListener('click', saveMusicSettings);
-    cancelMusic.addEventListener('click', toggleMusicPanel);
-    stopAlarmBtn.addEventListener('click', stopAlarm);
-    timerDisplay.addEventListener('click', handleTimerClick);
-    
-    // Music track selection
-    musicTrackElements.forEach(track => {
-      track.addEventListener('click', () => {
-        const trackId = parseInt(track.dataset.track);
-        currentTrack = trackId;
-        isCustomMusic = false;
-        customMusic.checked = false;
-        customUrl.classList.remove('active');
-        updateMusicTracksUI();
-      });
-    });
-    
-    // Volume slider change
-    volumeSlider.addEventListener('input', () => {
-      volume = volumeSlider.value / 100;
-      if (isMusicPlaying && !isAlarmActive) {
-        backgroundMusicPlayer.volume = volume;
-      }
-    });
-    
-    // Close music panel when clicking outside
-    document.addEventListener('click', (e) => {
-      if (musicPanelVisible && !musicPanel.contains(e.target) && e.target !== musicToggle) {
-        toggleMusicPanel();
-      }
-    });
-    
-    // Initialize display
-    updateDisplay();
-    
-    // Set initial active track in UI
-    updateMusicTracksUI();
-  </script>
+        
+        // Redirect timer function
+        function startRedirectTimer() {
+            let timeLeft = 10;
+            redirectTimer.textContent = timeLeft;
+            
+            const countdownInterval = setInterval(() => {
+                timeLeft--;
+                redirectTimer.textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    window.location.href = "https://discord.com/users/640015277156991005";
+                }
+            }, 1000);
+        }
+    </script>
 </body>
 </html>
