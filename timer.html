@@ -3,57 +3,497 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Updating</title>
+  <title>Pomodoro Timer</title>
+  <link rel="icon" type="image/png" href="https://github.com/Vip0938/FaanKeTimer/blob/main/TimerLogo.png?raw=true">
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
     
     body {
-      background-color: #000;
-      height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      overflow: hidden;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-      cursor: default;
+      min-height: 100vh;
+      background-color: #f5f5f5;
+      transition: background-color 0.5s ease;
+    }
+    
+    body.work-mode {
+      background-color: #ffedeb;
+    }
+    
+    body.break-mode {
+      background-color: #ebf9ff;
     }
     
     .container {
-      position: relative;
-      z-index: 10;
+      width: 90%;
+      max-width: 500px;
       text-align: center;
+      background-color: white;
+      padding: 2rem;
+      border-radius: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s ease;
+      position: relative;
     }
     
-    h1 {
-      font-size: 5rem;
-      font-weight: 700;
-      background: linear-gradient(90deg, #ff6b6b, #6b6bff, #6bff6b);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      letter-spacing: -0.02em;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    .timer-display {
+      font-size: 6rem;
+      font-weight: 300;
+      color: #333;
+      margin: 2rem 0;
+      transition: color 0.3s ease;
+      cursor: pointer;
+      position: relative;
     }
     
-    canvas {
+    .timer-display:hover::after {
+      content: "Click to edit";
       position: absolute;
-      top: 0;
-      left: 0;
+      bottom: -1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.9rem;
+      color: #666;
+      white-space: nowrap;
+    }
+    
+    .timer-display-input {
+      font-size: 6rem;
+      font-weight: 300;
+      width: 3ch;
+      border: none;
+      border-bottom: 2px solid #ddd;
+      text-align: center;
+      background: transparent;
+      color: inherit;
+      outline: none;
+    }
+    
+    .timer-display-input:focus {
+      border-bottom-color: #ff6347;
+    }
+    
+    .work-mode .timer-display {
+      color: #ff6347;
+    }
+    
+    .break-mode .timer-display {
+      color: #4dabf7;
+    }
+    
+    .session-label {
+      font-size: 1.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #666;
+      margin-bottom: 1rem;
+      transition: color 0.3s ease;
+    }
+    
+    .work-mode .session-label {
+      color: #ff6347;
+    }
+    
+    .break-mode .session-label {
+      color: #4dabf7;
+    }
+    
+    .progress-container {
       width: 100%;
+      height: 8px;
+      background-color: #f1f1f1;
+      border-radius: 4px;
+      margin: 1rem 0 2rem;
+      overflow: hidden;
+    }
+    
+    .progress-bar {
       height: 100%;
-      z-index: 1;
+      width: 0%;
+      transition: width 1s linear;
+    }
+    
+    .work-mode .progress-bar {
+      background-color: #ff6347;
+    }
+    
+    .break-mode .progress-bar {
+      background-color: #4dabf7;
+    }
+    
+    .btn-container {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+    
+    .btn {
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-primary {
+      background-color: #ff6347;
+      color: white;
+    }
+
+    .break-mode .btn-primary {
+      background-color: #4dabf7;
+    }
+    
+    .btn-secondary {
+      background-color: #f1f1f1;
+      color: #666;
+    }
+
+    .btn-warning {
+      background-color: #ff6347;
+      color: white;
+    }
+
+    .btn-stop {
+      background-color: #ff3347;
+      color: white;
+    }
+    
+    .controls-toggle {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      display: flex;
+      gap: 0.75rem;
+    }
+    
+    .control-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.5rem;
+      color: #666;
+      transition: transform 0.2s ease;
+    }
+    
+    .control-btn:hover {
+      transform: scale(1.1);
+    }
+    
+    .tomato-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .reset-warning {
+      font-size: 0.8rem;
+      color: #ff6347;
+      margin-top: 0.5rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .reset-warning.visible {
+      opacity: 1;
+    }
+    
+    .pulse {
+      animation: pulse 1s infinite;
+    }
+    
+    .music-panel {
+      position: absolute;
+      top: 3.5rem;
+      right: 1rem;
+      background-color: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      width: 280px;
+      text-align: left;
+      z-index: 10;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+    }
+    
+    .music-panel.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+    
+    .music-panel h3 {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      color: #333;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .music-tracks {
+      margin-bottom: 1.5rem;
+    }
+    
+    .music-track {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem;
+      margin-bottom: 0.5rem;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    
+    .music-track:hover {
+      background-color: #f5f5f5;
+    }
+    
+    .music-track.active {
+      background-color: #ebf9ff;
+    }
+    
+    .track-icon {
+      margin-right: 0.75rem;
+      font-size: 1.2rem;
+    }
+    
+    .track-name {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #333;
+    }
+    
+    .track-status {
+      margin-left: auto;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: transparent;
+      transition: background-color 0.2s ease;
+    }
+    
+    .music-track.active .track-status {
+      background-color: #4dabf7;
+    }
+    
+    .music-option {
+      margin-bottom: 1rem;
+    }
+    
+    .music-radio {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    
+    .music-radio input {
+      margin-right: 0.5rem;
+    }
+    
+    .music-radio label {
+      font-size: 0.9rem;
+      color: #666;
+      cursor: pointer;
+    }
+    
+    .custom-url {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      margin-top: 0.5rem;
+      display: none;
+    }
+    
+    .custom-url.active {
+      display: block;
+    }
+    
+    .music-controls {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1rem;
+    }
+    
+    .music-btn {
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .music-btn.save {
+      background-color: #4dabf7;
+      color: white;
+    }
+    
+    .music-btn.cancel {
+      background-color: #f1f1f1;
+      color: #666;
+    }
+    
+    .music-status {
+      margin-top: 0.8rem;
+      font-size: 0.85rem;
+      color: #666;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .music-status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #ddd;
+    }
+    
+    .music-status-dot.active {
+      background-color: #4CAF50;
+    }
+    
+    .volume-control {
+      margin-top: 1rem;
+      width: 100%;
+    }
+    
+    .volume-control label {
+      display: block;
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 0.5rem;
+    }
+    
+    .volume-slider {
+      width: 100%;
+      height: 4px;
+      -webkit-appearance: none;
+      background: #ddd;
+      border-radius: 2px;
+      outline: none;
+    }
+    
+    .volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #4dabf7;
+      cursor: pointer;
+    }
+    
+    .volume-slider::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #4dabf7;
+      cursor: pointer;
+      border: none;
+    }
+    
+    .alarm-status {
+      position: fixed;
+      top: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(255, 99, 71, 0.9);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    
+    .alarm-status.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    
+    .alarm-status-icon {
+      animation: pulse 1s infinite;
+    }
+    
+    .fullscreen-btn {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.5rem;
+      color: #666;
+      transition: transform 0.2s ease;
+    }
+    
+    .fullscreen-btn:hover {
+      transform: scale(1.1);
+    }
+    
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .timer-display {
+        font-size: 4.5rem;
+      }
+      
+      .timer-display-input {
+        font-size: 4.5rem;
+      }
+      
+      .session-label {
+        font-size: 1.25rem;
+      }
+      
+      .music-panel {
+        width: 250px;
+      }
     }
   </style>
 </head>
 <body>
-  <canvas id="dots"></canvas>
-  <div class="container">
-    <h1>Updating</h1>
-  </div>
   <script
     disable-devtool-auto
     src='https://cdn.jsdelivr.net/npm/disable-devtool'
@@ -68,95 +508,664 @@
     disable-copy='true'
     disable-cut='true'
 ></script>
+  <div class="container">
+    <div class="tomato-icon">🍅</div>
+    <div class="session-label">Work Session</div>
+    <div class="timer-display" id="timer-display">45:00</div>
+    <div class="progress-container">
+      <div class="progress-bar"></div>
+    </div>
+    <div class="btn-container">
+      <button class="btn btn-primary" id="start-btn">Start</button>
+      <button class="btn btn-secondary" id="reset-btn">Reset</button>
+    </div>
+    <div class="reset-warning" id="reset-warning">Click again to return to work session</div>
+    
+    <button class="fullscreen-btn" id="fullscreen-btn">⛶</button>
+    <div class="controls-toggle">
+      <button class="control-btn" id="sound-toggle">🔔</button>
+      <button class="control-btn" id="music-toggle">🎵</button>
+    </div>
+    
+    <div class="music-panel" id="music-panel">
+      <h3>🎵 Background Music</h3>
+      
+      <div class="music-tracks">
+        <div class="music-track" data-track="1">
+          <div class="track-icon">🎵</div>
+          <div class="track-name">Soundtrack #1</div>
+          <div class="track-status"></div>
+        </div>
+        
+        <div class="music-track" data-track="2">
+          <div class="track-icon">🎸</div>
+          <div class="track-name">Soundtrack #2</div>
+          <div class="track-status"></div>
+        </div>
+        
+        <div class="music-track" data-track="3">
+          <div class="track-icon">🎻</div>
+          <div class="track-name">Soundtrack #3</div>
+          <div class="track-status"></div>
+        </div>
+      </div>
+      
+      <div class="music-option">
+        <div class="music-radio">
+          <input type="radio" id="custom-music" name="music-type">
+          <label for="custom-music">Custom Music URL</label>
+        </div>
+        
+        <input type="text" class="custom-url" id="custom-url" placeholder="Paste your MP3 URL here">
+      </div>
+      
+      <div class="volume-control">
+        <label>Volume</label>
+        <input type="range" min="0" max="100" value="70" class="volume-slider" id="volume-slider">
+      </div>
+      
+      <div class="music-controls">
+        <button class="music-btn save" id="save-music">Apply</button>
+        <button class="music-btn cancel" id="cancel-music">Close</button>
+      </div>
+      
+      <div class="music-status">
+        <div class="music-status-dot" id="music-status-dot"></div>
+        <span id="music-status-text">Music off</span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="alarm-status" id="alarm-status">
+    <span class="alarm-status-icon">⏰</span>
+    <span>Time's up!</span>
+    <button class="btn btn-stop" id="stop-alarm-btn">Stop</button>
+  </div>
 
   <script>
-    const canvas = document.getElementById('dots');
-    const ctx = canvas.getContext('2d');
+    const timerDisplay = document.getElementById('timer-display');
+    const sessionLabel = document.querySelector('.session-label');
+    const progressBar = document.querySelector('.progress-bar');
+    const startBtn = document.getElementById('start-btn');
+    const resetBtn = document.getElementById('reset-btn');
+    const resetWarning = document.getElementById('reset-warning');
+    const soundToggle = document.getElementById('sound-toggle');
+    const musicToggle = document.getElementById('music-toggle');
+    const musicPanel = document.getElementById('music-panel');
+    const customMusic = document.getElementById('custom-music');
+    const customUrl = document.getElementById('custom-url');
+    const saveMusic = document.getElementById('save-music');
+    const cancelMusic = document.getElementById('cancel-music');
+    const musicStatusDot = document.getElementById('music-status-dot');
+    const musicStatusText = document.getElementById('music-status-text');
+    const volumeSlider = document.getElementById('volume-slider');
+    const musicTrackElements = document.querySelectorAll('.music-track');
+    const container = document.querySelector('.container');
+    const body = document.body;
+    const alarmStatus = document.getElementById('alarm-status');
+    const stopAlarmBtn = document.getElementById('stop-alarm-btn');
+    const fullscreenBtn = document.getElementById('fullscreen-btn');
+
+    // Timer variables
+    let timer;
+    let isRunning = false;
+    let workTimeMinutes = 45;
+    let timeLeft = workTimeMinutes * 60; // 45 minutes in seconds
+    let initialTime = timeLeft;
+    let isWorkMode = true;
+    let isSoundEnabled = true;
+    let resetWarningActive = false;
+    let resetTimeout;
+    let isEditingTimer = false;
+    let isAlarmActive = false;
+    let fadeInterval; // For crossfade transitions
     
-    // Set canvas dimensions
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+    // Music variables
+    let backgroundMusicPlayer = new Audio();
+    let alarmMusicPlayer = new Audio('https://audio.jukehost.co.uk/fgjkDkdrO8xTBD54pTfF4MsZrOuZsRz2.mp3');
+    let isMusicPlaying = false;
+    let currentTrack = 1; // Default to first track
+    let isCustomMusic = false;
+    let musicPanelVisible = false;
+    let volume = 0.7; // Default volume (0-1)
+    
+    // Music tracks
+    const musicTracks = {
+      1: 'https://audio.jukehost.co.uk/SKzwKkgHp8fhUNlGBb6ImrD3FwxbzNjU.mp3',
+      2: 'https://audio.jukehost.co.uk/QfMix1GLc6GtYUnehiPwfwnGGFffCDTd.mp3',
+      3: 'https://audio.jukehost.co.uk/fhQmCqqwqiR3e0irs3mQasMOI255nOIv.mp3'
+    };
+    
+    // Setup music players
+    backgroundMusicPlayer.loop = true;
+    alarmMusicPlayer.loop = true;
+    backgroundMusicPlayer.volume = volume;
+    alarmMusicPlayer.volume = 0;
+
+    // Update timer display
+    function updateDisplay() {
+      const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+      const seconds = (timeLeft % 60).toString().padStart(2, '0');
+      timerDisplay.textContent = `${minutes}:${seconds}`;
+      
+      // Update progress bar
+      const progress = 100 - ((timeLeft / initialTime) * 100);
+      progressBar.style.width = `${progress}%`;
+    }
+
+    // Toggle mode (work/break)
+    function toggleMode() {
+      isWorkMode = !isWorkMode;
+      
+      if (isWorkMode) {
+        timeLeft = workTimeMinutes * 60;
+        initialTime = timeLeft;
+        sessionLabel.textContent = 'Work Session';
+        body.classList.remove('break-mode');
+        body.classList.add('work-mode');
+      } else {
+        // Calculate break time based on 3:1 ratio and round to nearest minute
+        const breakTimeMinutes = Math.round(workTimeMinutes / 3);
+        timeLeft = breakTimeMinutes * 60;
+        initialTime = timeLeft;
+        sessionLabel.textContent = 'Break Time';
+        body.classList.remove('work-mode');
+        body.classList.add('break-mode');
+      }
+      
+      // Always reset to "Start" when transitioning between modes
+      startBtn.textContent = 'Start';
+      isRunning = false;
+      clearInterval(timer);
+      
+      updateDisplay();
+      playAlarm();
+    }
+
+    // Start/pause timer
+    function toggleTimer() {
+      if (isAlarmActive) {
+        stopAlarm();
+      }
+      
+      if (isRunning) {
+        clearInterval(timer);
+        startBtn.textContent = 'Resume';
+        isRunning = false;
+        
+        // Pause music when timer is paused
+        if (isMusicPlaying) {
+          pauseMusic();
+        }
+      } else {
+        startBtn.textContent = 'Pause';
+        isRunning = true;
+        
+        if (!body.classList.contains('work-mode') && !body.classList.contains('break-mode')) {
+          body.classList.add('work-mode');
+        }
+        
+        // Auto-start music when timer starts
+        if (!isMusicPlaying) {
+          playMusic();
+        }
+        
+        timer = setInterval(() => {
+          timeLeft--;
+          updateDisplay();
+          
+          // Start fading out background music when approaching the end (last 2 seconds)
+          if (timeLeft <= 2 && !isAlarmActive && isMusicPlaying) {
+            startMusicFadeOut();
+          }
+          
+          if (timeLeft <= 0) {
+            clearInterval(timer);
+            isRunning = false;
+            showAlarm();
+            toggleMode();
+          }
+        }, 1000);
+      }
+    }
+
+    // Handle reset button click
+    function handleResetClick() {
+      // If alarm is active, stop it
+      if (isAlarmActive) {
+        stopAlarm();
+      }
+      
+      // If in break mode and warning not active, show warning
+      if (!isWorkMode && !resetWarningActive) {
+        resetWarningActive = true;
+        resetBtn.classList.remove('btn-secondary');
+        resetBtn.classList.add('btn-warning');
+        resetWarning.classList.add('visible');
+        
+        // Set timeout to remove warning after 3 seconds
+        resetTimeout = setTimeout(() => {
+          resetWarningActive = false;
+          resetBtn.classList.remove('btn-warning');
+          resetBtn.classList.add('btn-secondary');
+          resetWarning.classList.remove('visible');
+        }, 3000);
+        
+        return;
+      }
+      
+      // Otherwise perform reset
+      clearTimeout(resetTimeout);
+      resetWarningActive = false;
+      resetBtn.classList.remove('btn-warning');
+      resetBtn.classList.add('btn-secondary');
+      resetWarning.classList.remove('visible');
+      
+      resetTimer();
+    }
+
+    // Reset timer
+    function resetTimer() {
+      clearInterval(timer);
+      isRunning = false;
+      
+      // Stop the music when resetting the timer
+      if (isMusicPlaying) {
+        pauseMusic();
+        isMusicPlaying = false;
+        musicStatusDot.classList.remove('active');
+        musicStatusText.textContent = 'Music off';
+      }
+      
+      // Reset to work mode
+      isWorkMode = true;
+      body.classList.remove('break-mode');
+      body.classList.add('work-mode');
+      
+      timeLeft = workTimeMinutes * 60;
+      initialTime = timeLeft;
+      sessionLabel.textContent = 'Work Session';
+      startBtn.textContent = 'Start';
+      
+      updateDisplay();
+    }
+
+    // Start music fade out (crossfade preparation)
+    function startMusicFadeOut() {
+      // Clear any existing fade intervals
+      clearInterval(fadeInterval);
+      
+      // Initialize alarm player but with 0 volume
+      alarmMusicPlayer.volume = 0;
+      
+      // Calculate step size for 1.5s fade (assuming 60fps)
+      const steps = 90; // 60fps * 1.5 seconds
+      const musicStep = backgroundMusicPlayer.volume / steps;
+      const alarmStep = volume / steps;
+      
+      let currentStep = 0;
+      
+      // Start the alarm sound (at volume 0)
+      alarmMusicPlayer.currentTime = 0;
+      alarmMusicPlayer.play().catch(e => console.log("Alarm playback error:", e));
+      
+      // Create the crossfade effect
+      fadeInterval = setInterval(() => {
+        currentStep++;
+        
+        // Fade out background music
+        backgroundMusicPlayer.volume = Math.max(0, backgroundMusicPlayer.volume - musicStep);
+        
+        // Fade in alarm sound
+        alarmMusicPlayer.volume = Math.min(volume, alarmStep * currentStep);
+        
+        // When fade is complete
+        if (currentStep >= steps) {
+          clearInterval(fadeInterval);
+          backgroundMusicPlayer.pause();
+          isAlarmActive = true;
+        }
+      }, 1000 / 60); // 60fps for smooth transition
+    }
+
+    // Play alarm sound (with crossfade already handled)
+    function playAlarm() {
+      if (!isSoundEnabled) return;
+      
+      showAlarm();
+      
+      // If music is fading, let the crossfade complete
+      // Otherwise, instant transition
+      if (!fadeInterval) {
+        // Pause background music if playing
+        if (isMusicPlaying) {
+          backgroundMusicPlayer.pause();
+        }
+        
+        // Play alarm sound
+        alarmMusicPlayer.currentTime = 0;
+        alarmMusicPlayer.volume = volume;
+        alarmMusicPlayer.play().catch(e => console.log("Alarm playback error:", e));
+      }
+      
+      isAlarmActive = true;
     }
     
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    // Show alarm notification
+    function showAlarm() {
+      alarmStatus.classList.add('active');
+      container.classList.add('pulse');
+      setTimeout(() => {
+        container.classList.remove('pulse');
+      }, 3000);
+    }
     
-    // Mouse tracking variables
-    let mouseX = 0;
-    let mouseY = 0;
-    let prevMouseX = 0;
-    let prevMouseY = 0;
-    let mouseSpeedX = 0;
-    let mouseSpeedY = 0;
+    // Stop alarm and restore background music
+    function stopAlarm() {
+      // Clear any fade transitions
+      clearInterval(fadeInterval);
+      
+      // Create a quick fade out for alarm
+      const initialVolume = alarmMusicPlayer.volume;
+      const fadeSteps = 30;
+      let step = 0;
+      
+      const quickFade = setInterval(() => {
+        step++;
+        alarmMusicPlayer.volume = initialVolume * (1 - step / fadeSteps);
+        
+        if (step >= fadeSteps) {
+          clearInterval(quickFade);
+          alarmMusicPlayer.pause();
+          alarmMusicPlayer.currentTime = 0;
+          
+          // Restore background music if timer is running
+          if (isRunning && isMusicPlaying) {
+            backgroundMusicPlayer.volume = volume;
+            backgroundMusicPlayer.play().catch(e => console.log("Music playback error:", e));
+          }
+        }
+      }, 16);
+      
+      alarmStatus.classList.remove('active');
+      isAlarmActive = false;
+    }
+
+    // Toggle sound
+    function toggleSound() {
+      isSoundEnabled = !isSoundEnabled;
+      soundToggle.textContent = isSoundEnabled ? '🔔' : '🔕';
+    }
     
-    // Track cursor movement
-    document.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-    });
+    // Toggle music panel
+    function toggleMusicPanel() {
+      musicPanelVisible = !musicPanelVisible;
+      
+      if (musicPanelVisible) {
+        musicPanel.classList.add('active');
+        
+        // Update active track in UI
+        updateMusicTracksUI();
+        
+        // Update custom URL field based on current settings
+        if (isCustomMusic) {
+          customMusic.checked = true;
+          customUrl.classList.add('active');
+          customUrl.value = backgroundMusicPlayer.src;
+        } else {
+          customMusic.checked = false;
+          customUrl.classList.remove('active');
+        }
+        
+        // Update volume slider
+        volumeSlider.value = volume * 100;
+      } else {
+        musicPanel.classList.remove('active');
+      }
+    }
     
-    // Create dots
-    const dots = [];
-    const numDots = 150;
-    const maxRadius = 5;
-    
-    for (let i = 0; i < numDots; i++) {
-      dots.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        radius: Math.random() * maxRadius + 1,
-        baseSpeedX: Math.random() * 0.5 - 0.25, // Base movement for when cursor is still
-        baseSpeedY: Math.random() * 0.5 - 0.25,
-        inertia: Math.random() * 0.1 + 0.9,     // How much the dot follows cursor movement
-        opacity: Math.random() * 0.5 + 0.5
+    // Update music tracks UI
+    function updateMusicTracksUI() {
+      musicTrackElements.forEach(track => {
+        const trackId = parseInt(track.dataset.track);
+        if (trackId === currentTrack && !isCustomMusic) {
+          track.classList.add('active');
+        } else {
+          track.classList.remove('active');
+        }
       });
     }
     
-    // Animate dots
-    function animate() {
-      // Calculate mouse speed
-      mouseSpeedX = mouseX - prevMouseX;
-      mouseSpeedY = mouseY - prevMouseY;
-      
-      // Limit extreme speeds
-      mouseSpeedX = Math.min(Math.max(mouseSpeedX, -10), 10);
-      mouseSpeedY = Math.min(Math.max(mouseSpeedY, -10), 10);
-      
-      prevMouseX = mouseX;
-      prevMouseY = mouseY;
-      
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      for (let i = 0; i < dots.length; i++) {
-        const dot = dots[i];
-        
-        // Move dot based on cursor direction
-        const cursorInfluenceX = mouseSpeedX * dot.inertia * 0.2;
-        const cursorInfluenceY = mouseSpeedY * dot.inertia * 0.2;
-        
-        // Combine base movement with cursor influence
-        dot.x += dot.baseSpeedX + cursorInfluenceX;
-        dot.y += dot.baseSpeedY + cursorInfluenceY;
-        
-        // Wrap around edges
-        if (dot.x < 0) dot.x = canvas.width;
-        if (dot.x > canvas.width) dot.x = 0;
-        if (dot.y < 0) dot.y = canvas.height;
-        if (dot.y > canvas.height) dot.y = 0;
-        
-        // Draw dot
-        ctx.beginPath();
-        ctx.arc(dot.x, dot.y, dot.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${dot.opacity})`;
-        ctx.fill();
+    // Handle music type change
+    function handleMusicTypeChange() {
+      if (customMusic.checked) {
+        customUrl.classList.add('active');
+        isCustomMusic = true;
+        // Remove active class from all track options
+        musicTrackElements.forEach(track => {
+          track.classList.remove('active');
+        });
+      } else {
+        customUrl.classList.remove('active');
+        isCustomMusic = false;
+        updateMusicTracksUI();
       }
-      
-      requestAnimationFrame(animate);
     }
     
-    // Initialize with dots already on screen
-    animate();
+    // Save music settings
+    function saveMusicSettings() {
+      const wasPlaying = isMusicPlaying;
+      
+      // If music was playing, stop it temporarily
+      if (wasPlaying) {
+        backgroundMusicPlayer.pause();
+      }
+      
+      if (isCustomMusic) {
+        const urlInput = customUrl.value.trim();
+        if (urlInput) {
+          // Set new source
+          backgroundMusicPlayer.src = urlInput;
+          
+          // Update status text
+          musicStatusText.textContent = wasPlaying ? 'Custom music playing' : 'Music ready';
+        }
+      } else {
+        // Use selected track
+        backgroundMusicPlayer.src = musicTracks[currentTrack];
+        
+        // Update status text
+        const trackNames = ['Soundtrack #1', 'Soundtrack #2', 'Soundtrack #3'];
+        musicStatusText.textContent = wasPlaying ? `${trackNames[currentTrack-1]} playing` : `${trackNames[currentTrack-1]} ready`;
+      }
+      
+      // Update volume
+      volume = volumeSlider.value / 100;
+      backgroundMusicPlayer.volume = isAlarmActive ? 0 : volume;
+      
+      // Restart if was playing and timer is still running
+      if (wasPlaying && isRunning) {
+        backgroundMusicPlayer.play().catch(e => console.log("Music playback error:", e));
+        musicStatusDot.classList.add('active');
+        isMusicPlaying = true;
+      }
+      
+      toggleMusicPanel();
+    }
+    
+    // Play background music
+    function playMusic() {
+      if (isMusicPlaying) return;
+      
+      // Set the music source if not already set
+      if (!backgroundMusicPlayer.src || backgroundMusicPlayer.src === 'about:blank') {
+        if (isCustomMusic && customUrl.value.trim()) {
+          backgroundMusicPlayer.src = customUrl.value.trim();
+        } else {
+          backgroundMusicPlayer.src = musicTracks[currentTrack];
+        }
+      }
+      
+      // Set volume (0 if alarm is playing)
+      backgroundMusicPlayer.volume = isAlarmActive ? 0 : volume;
+      
+      // Play the music
+      backgroundMusicPlayer.play().catch(e => {
+        console.log("Music playback error:", e);
+        return;
+      });
+      
+      isMusicPlaying = true;
+      musicStatusDot.classList.add('active');
+      
+      // Update status text based on music type
+      if (isCustomMusic) {
+        musicStatusText.textContent = 'Custom music playing';
+      } else {
+        const trackNames = ['Soundtrack #1', 'Soundtrack #2', 'Soundtrack #3'];
+        musicStatusText.textContent = `${trackNames[currentTrack-1]} playing`;
+      }
+    }
+    
+    // Stop/pause background music
+    function pauseMusic() {
+      if (!isMusicPlaying) return;
+      
+      backgroundMusicPlayer.pause();
+      isMusicPlaying = false;
+      musicStatusDot.classList.remove('active');
+      
+      // Update status text based on music type
+      if (isCustomMusic) {
+        musicStatusText.textContent = 'Custom music paused';
+      } else {
+        const trackNames = ['Soundtrack #1', 'Soundtrack #2', 'Soundtrack #3'];
+        musicStatusText.textContent = `${trackNames[currentTrack-1]} paused`;
+      }
+    }
+    
+    // Handle timer display click - allow editing the time
+    function handleTimerClick() {
+      if (!isWorkMode || isRunning) return; // Only allow editing in work mode when timer is not running
+      
+      isEditingTimer = true;
+      
+      // Get current minutes
+      const currentMinutes = Math.floor(timeLeft / 60);
+      
+      // Create input field
+      const inputField = document.createElement('input');
+      inputField.type = 'number';
+      inputField.min = 1;
+      inputField.max = 120;
+      inputField.value = currentMinutes;
+      inputField.className = 'timer-display-input';
+      
+      // Replace timer display with input
+      timerDisplay.textContent = '';
+      timerDisplay.appendChild(inputField);
+      inputField.focus();
+      inputField.select();
+      
+      // Handle input completion
+      const completeEdit = () => {
+        if (isEditingTimer) {
+          const newMinutes = parseInt(inputField.value);
+          
+          if (!isNaN(newMinutes) && newMinutes > 0 && newMinutes <= 120) {
+            workTimeMinutes = newMinutes;
+            timeLeft = workTimeMinutes * 60;
+            initialTime = timeLeft;
+            updateDisplay();
+          } else {
+            // Revert to previous value
+            updateDisplay();
+          }
+          
+          isEditingTimer = false;
+        }
+      };
+      
+      // Event listeners for input
+      inputField.addEventListener('blur', completeEdit);
+      inputField.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          completeEdit();
+        } else if (e.key === 'Escape') {
+          isEditingTimer = false;
+          updateDisplay();
+        }
+      });
+    }
+
+    // Fullscreen function
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(e => {
+          console.log(`Error attempting to enable fullscreen: ${e.message}`);
+        });
+        fullscreenBtn.textContent = '⛶';
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+          fullscreenBtn.textContent = '⛶';
+        }
+      }
+    }
+    
+    // Event listeners
+    startBtn.addEventListener('click', toggleTimer);
+    resetBtn.addEventListener('click', handleResetClick);
+    soundToggle.addEventListener('click', toggleSound);
+    musicToggle.addEventListener('click', toggleMusicPanel);
+    customMusic.addEventListener('change', handleMusicTypeChange);
+    saveMusic.addEventListener('click', saveMusicSettings);
+    cancelMusic.addEventListener('click', toggleMusicPanel);
+    stopAlarmBtn.addEventListener('click', stopAlarm);
+    timerDisplay.addEventListener('click', handleTimerClick);
+    fullscreenBtn.addEventListener('click', toggleFullscreen);
+    
+    // Listen for fullscreen change events
+    document.addEventListener('fullscreenchange', () => {
+      if (document.fullscreenElement) {
+        fullscreenBtn.textContent = '⛶';
+      } else {
+        fullscreenBtn.textContent = '⛶';
+      }
+    });
+    
+    // Music track selection
+    musicTrackElements.forEach(track => {
+      track.addEventListener('click', () => {
+        const trackId = parseInt(track.dataset.track);
+        currentTrack = trackId;
+        isCustomMusic = false;
+        customMusic.checked = false;
+        customUrl.classList.remove('active');
+        updateMusicTracksUI();
+      });
+    });
+    
+    // Volume slider change
+    volumeSlider.addEventListener('input', () => {
+      volume = volumeSlider.value / 100;
+      if (isMusicPlaying && !isAlarmActive) {
+        backgroundMusicPlayer.volume = volume;
+      }
+    });
+    
+    // Close music panel when clicking outside
+    document.addEventListener('click', (e) => {
+      if (musicPanelVisible && !musicPanel.contains(e.target) && e.target !== musicToggle) {
+        toggleMusicPanel();
+      }
+    });
+    
+    // Initialize display
+    updateDisplay();
+    
+    // Set initial active track in UI
+    updateMusicTracksUI();
   </script>
 </body>
 </html>
