@@ -1,444 +1,59 @@
-<!-- This code is protected under 2 licenses, if you have found stealing this code we will take legal actions (UPD) -->
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vip0938's Cloud Timer</title>
-    <!-- Added favicon link -->
-    <link rel="icon" type="image/png" href="Tomato.png">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
-        
-        body {
-            background-color: #000;
-            color: #fff;
-            min-height: 100vh;
-            padding: 1rem;
-            text-align: center;
-            overflow-x: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start; /* Changed to flex-start */
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1000px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-            min-height: 100vh; /* Key change to prevent collapse */
-        }
-        
-        .background-blur {
-            position: absolute;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0) 70%);
-            top: -300px;
-            right: -300px;
-            border-radius: 50%;
-            filter: blur(80px);
-            z-index: 0;
-        }
-        
-        /* Main View */
-        .main-view {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center; /* Centered content */
-            min-height: 100vh; /* Ensure full height */
-        }
-        
-        .background-blur-2 {
-            position: absolute;
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, rgba(0,0,0,0) 70%);
-            bottom: -250px;
-            left: -250px;
-            border-radius: 50%;
-            filter: blur(80px);
-            z-index: 0;
-        }
-        
-        h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
-            font-weight: 600;
-            background: linear-gradient(135deg, #ffffff 0%, #aaaaaa 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -0.03em;
-        }
-        
-        p {
-            font-size: 1.25rem;
-            line-height: 1.6;
-            color: #a0a0a0;
-            margin-bottom: 3.5rem;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-            font-weight: 400;
-        }
-        
-        .btn {
-            background: linear-gradient(135deg, #ffffff 0%, #888888 100%);
-            color: #000;
-            border: none;
-            padding: 1rem 2rem;
-            font-size: 1.1rem;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.5s ease;
-            font-weight: 500;
-            letter-spacing: 0.03em;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 6px 30px rgba(255, 255, 255, 0.1);
-            white-space: nowrap;
-            min-width: 120px;
-        }
-        
-        .btn:hover {
-            box-shadow: 0 8px 40px rgba(255, 255, 255, 0.2);
-            transform: translateY(-3px);
-        }
-        
-        .btn:before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
-            transition: all 0.6s ease;
-        }
-        
-        .btn:hover:before {
-            left: 100%;
-        }
-        
-        .footer {
-            margin-top: 7rem;
-            color: #555;
-            font-size: 0.9rem;
-            letter-spacing: 0.01em;
-            width: 100%;
-            text-align: center;
-        }
-        
-        .decorative-line {
-            width: 60px;
-            height: 3px;
-            background: linear-gradient(90deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.1) 100%);
-            margin: 0 auto 2.5rem auto;
-            border-radius: 3px;
-        }
-
-        /* Plans UI Styling */
-        .main-view, .plans-view, .key-view, .redirect-view {
-            transition: opacity 0.7s ease, transform 0.7s ease;
-            width: 100%;
-        }
-        
-        .plans-view, .key-view, .redirect-view {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            opacity: 0;
-            transform: translateY(30px);
-            display: none;
-            z-index: 5;
-        }
-        
-        .plans-container {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-top: 2rem;
-            width: 100%;
-            flex-wrap: wrap;
-        }
-
-        .plan-card {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            padding: 2rem;
-            width: 100%;
-            max-width: 350px;
-            text-align: center;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .plan-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-        }
-        
-        .plan-title {
-            font-size: 1.8rem;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-        
-        .plan-price {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(135deg, #ffffff 0%, #aaaaaa 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .plan-subtitle {
-            color: #a0a0a0;
-            margin-bottom: 1rem;
-        }
-        
-        .pro-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.03) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .feature-list {
-            margin: 2rem 0;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            padding-left: 1rem;
-        }
-        
-        .feature-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1rem;
-            color: #a0a0a0;
-            width: 100%;
-            text-align: left;
-        }
-        
-        .feature-icon {
-            margin-right: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 22px;
-            height: 22px;
-            flex-shrink: 0;
-        }
-        
-        .feature-icon.tick {
-            color: #6fffa0;
-        }
-        
-        .feature-icon.cross {
-            color: #ff6f6f;
-        }
-        
-        .feature-text {
-            font-size: 1rem;
-            white-space: normal;
-        }
-        
-        .plan-btn {
-            width: 100%;
-            margin-top: 1rem;
-        }
-        
-        .back-btn {
-            background: none;
-            border: none;
-            color: #777;
-            cursor: pointer;
-            margin-bottom: 2rem;
-            display: flex;
-            align-items: center;
-            font-size: 1rem;
-        }
-        
-        .back-btn:hover {
-            color: #fff;
-        }
-        
-        .back-icon {
-            margin-right: 8px;
-        }
-
-        /* Key UI Styling */
-        .key-input-container {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            padding: 2rem;
-            width: 100%;
-            max-width: 500px;
-            margin: 2rem auto;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .key-input {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            padding: 1rem;
-            color: white;
-            font-size: 1.1rem;
-            margin-bottom: 1.5rem;
-            outline: none;
-            transition: border-color 0.3s ease;
-        }
-        
-        .key-input:focus {
-            border-color: rgba(255, 255, 255, 0.5);
-        }
-        
-        .key-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            width: 100%;
-        }
-        
-        .key-btn {
-            flex: 1;
-            max-width: 150px;
-            font-size: 1rem;
-            padding: 1rem 1.5rem;
-        }
-        
-        .error-message {
-            color: #ff6f6f;
-            margin-top: 1rem;
-            font-size: 0.9rem;
-            min-height: 20px;
-        }
-        
-        /* Redirect View */
-        .redirect-message {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            padding: 2.5rem;
-            width: 100%;
-            max-width: 600px;
-            margin: 2rem auto;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .redirect-timer {
-            font-size: 2rem;
-            margin: 1.5rem 0;
-            font-weight: bold;
-            background: linear-gradient(135deg, #ffffff 0%, #aaaaaa 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /* Mobile Optimizations */
-        @media (max-width: 991px) {
-            .container {
-                padding: 0 1rem;
-            }
-            
-            h1 {
-                font-size: 2.8rem;
-            }
-            
-            .plans-container {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .plan-card {
-                width: 100%;
-                max-width: 450px;
-            }
-        }
-
-        @media (max-width: 767px) {
-            body {
-                padding: 1rem;
-            }
-            
-            h1 {
-                font-size: 2.5rem;
-            }
-            
-            p {
-                font-size: 1.1rem;
-                margin-bottom: 2.5rem;
-            }
-            
-            .key-buttons {
-                flex-direction: row;
-            }
-            
-            .key-btn {
-                width: 100%;
-                max-width: none;
-            }
-            
-            .btn {
-                font-size: 1rem;
-                padding: 0.9rem 1.8rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .key-input-container {
-                padding: 1.5rem;
-            }
-            
-            .key-buttons {
-                flex-direction: column;
-                gap: 0.8rem;
-            }
-            
-            .key-btn {
-                width: 100%;
-                max-width: none;
-            }
-            
-            .plan-price {
-                font-size: 2rem;
-            }
-            
-            .feature-text {
-                font-size: 0.9rem;
-            }
-            
-            .btn {
-                width: 100%;
-                max-width: 200px;
-                margin-left: auto;
-                margin-right: auto;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Updating</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      background-color: #000;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      cursor: default;
+    }
+    
+    .container {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+    }
+    
+    h1 {
+      font-size: 5rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #ff6b6b, #6b6bff, #6bff6b);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.02em;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    }
+    
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+  </style>
 </head>
 <body>
+  <canvas id="dots"></canvas>
+  <div class="container">
+    <h1>Updating</h1>
+  </div>
 <script
     disable-devtool-auto
     src='https://cdn.jsdelivr.net/npm/disable-devtool'
@@ -453,360 +68,94 @@
     disable-copy='true'
     disable-cut='true'
 ></script>
-    <div class="background-blur"></div>
-    <div class="background-blur-2"></div>
+  <script>
+    const canvas = document.getElementById('dots');
+    const ctx = canvas.getContext('2d');
     
-    <div class="container">
-        <!-- Main View -->
-        <div class="main-view">
-            <h1>Vip0938's Cloud Timer</h1>
-            <div class="decorative-line"></div>
-            <p>
-                Elevate your productivity with a timer app that blends uncompromising functionality with elegant simplicity.
-            </p>
-            <button class="btn" id="getStartedBtn">Get Started</button>
-            <div class="footer">
-                © 2025 Vip0938. All rights reserved.
-            </div>
-        </div>
-        
-        <!-- Plans View -->
-        <div class="plans-view">
-            <button class="back-btn" id="backBtn">
-                <svg class="back-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                Back
-            </button>
-            
-            <h1>Choose Your Plan</h1>
-            <div class="decorative-line"></div>
-            
-            <div class="plans-container">
-                <!-- Free Plan -->
-                <div class="plan-card">
-                    <div class="plan-title">Free</div>
-                    <div class="plan-price">$0</div>
-                    <div class="plan-subtitle">Perfect for getting started</div>
-                    
-                    <div class="feature-list">
-                        <div class="feature-item">
-                            <div class="feature-icon tick">
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M3 8L6 11L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
-                            <div class="feature-text">Seamless Timer</div>
-                        </div>
-                        
-                        <div class="feature-item">
-                            <div class="feature-icon tick">
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M3 8L6 11L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
-                            <div class="feature-text">No Ads</div>
-                        </div>
-                        
-                        <div class="feature-item">
-                            <div class="feature-icon tick">
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M3 8L6 11L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
-                            <div class="feature-text">Up-To-Date Timer</div>
-                        </div>
-                        
-                        <div class="feature-item">
-                            <div class="feature-icon tick">
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M3 8L6 11L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
-                            <div class="feature-text">Custom Music Support</div>
-                        </div>
-                        
-                        <div class="feature-item">
-                            <div class="feature-icon cross">
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4 4L12 12M4 12L12 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
-                            <div class="feature-text">Offline Support</div>
-                        </div>
-                        
-                        <div class="feature-item">
-                            <div class="feature-icon cross">
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4 4L12 12M4 12L12 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
-                            <div class="feature-text">Email Updated File Service</div>
-                        </div>
-                        
-                        <div class="feature-item">
-                            <div class="feature-icon cross">
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4 4L12 12M4 12L12 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
-                            <div class="feature-text">BETA Features</div>
-                        </div>
-                    </div>
-                    
-                    <button class="btn plan-btn" id="freeBtn">Try It For FREE</button>
-                </div>
-                
-                <!-- Pro Plan -->
-                <div class="plan-card pro-card">
-                    <div class="plan-title">Pro</div>
-                    <div class="plan-price">$0.99/1yr</div>
-                    <div class="plan-subtitle">All features unlocked</div>
-                    
-                    <div class="feature-list">
-                        <div class="feature-item">
-                            <div class="feature-icon tick">
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M3 8L6 11L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
-                            <div class="feature-text">Seamless Timer</div>
-                        </div>
-                        
-                        <div class="feature-item">
-                            <div class="feature-icon tick">
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M3 8L6 11L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
-                            <div class="feature-text">No Ads</div>
-                        </div>
-                        
-                        <div class="feature-item">
-                            <div class="feature-icon tick">
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M3 8L6 11L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
-                            <div class="feature-text">Dark Theme</div>
-                        </div>
-                        
-                        <div class="feature-item">
-                            <div class="feature-icon tick">
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M3 8L6 11L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
-                            <div class="feature-text">Custom Music Support</div>
-                        </div>
-                        
-                        <div class="feature-item">
-                            <div class="feature-icon tick">
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M3 8L6 11L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
-                            <div class="feature-text">Offline Support</div>
-                        </div>
-                        
-                        <div class="feature-item">
-                            <div class="feature-icon tick">
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M3 8L6 11L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
-                            <div class="feature-text">Email Updated File Service</div>
-                        </div>
-                        
-                        <div class="feature-item">
-                            <div class="feature-icon tick">
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M3 8L6 11L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
-                            <div class="feature-text">BETA Features</div>
-                        </div>
-                    </div>
-                    
-                    <button class="btn plan-btn" id="proBtn">Get Pro</button>
-                </div>
-            </div>
-            
-            <div class="footer">
-                © 2025 Vip0938. All rights reserved.
-            </div>
-        </div>
-        
-        <!-- Key View -->
-        <div class="key-view">
-            <button class="back-btn" id="keyBackBtn">
-                <svg class="back-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                Back to Plans
-            </button>
-            
-            <h1>Enter Product Key</h1>
-            <div class="decorative-line"></div>
-            
-            <div class="key-input-container">
-                <p style="margin-bottom: 1.5rem;">Please enter your product key to activate the Pro version.</p>
-                <input type="text" class="key-input" id="keyInput" placeholder="Enter your product key here">
-                
-                <div class="key-buttons">
-                    <button class="btn key-btn" id="buyBtn">Buy</button>
-                    <button class="btn key-btn" id="enterBtn">Enter</button>
-                </div>
-                
-                <div class="error-message" id="errorMessage"></div>
-            </div>
-            
-            <div class="footer">
-                © 2025 Vip0938's Cloud Timer. All rights reserved.
-            </div>
-        </div>
-        
-        <!-- Redirect View -->
-        <div class="redirect-view">
-            <h1>Purchasing Pro Version</h1>
-            <div class="decorative-line"></div>
-            
-            <div class="redirect-message">
-                <p>I'll redirect you to my Discord. Please message me there if you're interested in buying.</p>
-                <div class="redirect-timer" id="redirectTimer">10</div>
-            </div>
-            
-            <div class="footer">
-                © 2025 Vip0938's Cloud Storage. All rights reserved.
-            </div>
-        </div>
-    </div>
+    // Set canvas dimensions
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
     
-    <script>
-        // DOM Elements
-        const getStartedBtn = document.getElementById('getStartedBtn');
-        const backBtn = document.getElementById('backBtn');
-        const freeBtn = document.getElementById('freeBtn');
-        const proBtn = document.getElementById('proBtn');
-        const keyBackBtn = document.getElementById('keyBackBtn');
-        const buyBtn = document.getElementById('buyBtn');
-        const enterBtn = document.getElementById('enterBtn');
-        const keyInput = document.getElementById('keyInput');
-        const errorMessage = document.getElementById('errorMessage');
-        const redirectTimer = document.getElementById('redirectTimer');
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    
+    // Mouse tracking variables
+    let mouseX = 0;
+    let mouseY = 0;
+    let prevMouseX = 0;
+    let prevMouseY = 0;
+    let mouseSpeedX = 0;
+    let mouseSpeedY = 0;
+    
+    // Track cursor movement
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+    
+    // Create dots
+    const dots = [];
+    const numDots = 150;
+    const maxRadius = 5;
+    
+    for (let i = 0; i < numDots; i++) {
+      dots.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * maxRadius + 1,
+        baseSpeedX: Math.random() * 0.5 - 0.25, // Base movement for when cursor is still
+        baseSpeedY: Math.random() * 0.5 - 0.25,
+        inertia: Math.random() * 0.1 + 0.9,     // How much the dot follows cursor movement
+        opacity: Math.random() * 0.5 + 0.5
+      });
+    }
+    
+    // Animate dots
+    function animate() {
+      // Calculate mouse speed
+      mouseSpeedX = mouseX - prevMouseX;
+      mouseSpeedY = mouseY - prevMouseY;
+      
+      // Limit extreme speeds
+      mouseSpeedX = Math.min(Math.max(mouseSpeedX, -10), 10);
+      mouseSpeedY = Math.min(Math.max(mouseSpeedY, -10), 10);
+      
+      prevMouseX = mouseX;
+      prevMouseY = mouseY;
+      
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      for (let i = 0; i < dots.length; i++) {
+        const dot = dots[i];
         
-        const mainView = document.querySelector('.main-view');
-        const plansView = document.querySelector('.plans-view');
-        const keyView = document.querySelector('.key-view');
-        const redirectView = document.querySelector('.redirect-view');
+        // Move dot based on cursor direction
+        const cursorInfluenceX = mouseSpeedX * dot.inertia * 0.2;
+        const cursorInfluenceY = mouseSpeedY * dot.inertia * 0.2;
         
-        // Transition functions
-        function showView(viewToShow, viewToHide, direction = "forward") {
-            // Hide current view
-            viewToHide.style.opacity = '0';
-            viewToHide.style.transform = direction === "forward" ? 'translateY(-30px)' : 'translateY(30px)';
-            
-            setTimeout(() => {
-                viewToHide.style.display = 'none';
-                viewToShow.style.display = 'block';
-                
-                // Force reflow
-                void viewToShow.offsetWidth;
-                
-                // Show new view
-                viewToShow.style.opacity = '1';
-                viewToShow.style.transform = 'translateY(0)';
-            }, 700);
-        }
+        // Combine base movement with cursor influence
+        dot.x += dot.baseSpeedX + cursorInfluenceX;
+        dot.y += dot.baseSpeedY + cursorInfluenceY;
         
-        // Main to Plans transition
-        getStartedBtn.addEventListener('click', () => {
-            showView(plansView, mainView, "forward");
-        });
+        // Wrap around edges
+        if (dot.x < 0) dot.x = canvas.width;
+        if (dot.x > canvas.width) dot.x = 0;
+        if (dot.y < 0) dot.y = canvas.height;
+        if (dot.y > canvas.height) dot.y = 0;
         
-        // Plans to Main transition
-        backBtn.addEventListener('click', () => {
-            showView(mainView, plansView, "backward");
-        });
-        
-        // Free Plan button
-        freeBtn.addEventListener('click', () => {
-            window.location.href = "/timer";
-        });
-        
-        // Pro Plan button
-        proBtn.addEventListener('click', () => {
-            showView(keyView, plansView, "forward");
-        });
-        
-        // Key Back button
-        keyBackBtn.addEventListener('click', () => {
-            showView(plansView, keyView, "backward");
-        });
-        
-        // Buy button
-        buyBtn.addEventListener('click', () => {
-            showView(redirectView, keyView, "forward");
-            startRedirectTimer();
-        });
-        
-        // Enter button for key validation
-        enterBtn.addEventListener('click', validateKey);
-        
-        // Also validate on Enter key press
-        keyInput.addEventListener('keyup', (event) => {
-            if (event.key === "Enter") {
-                validateKey();
-            }
-        });
-        
-        // Function to validate the product key
-        function validateKey() {
-            const key = keyInput.value.trim();
-            if (checkEncryptedKey(key)) {
-                // Download TomatoTimer.zip file
-                downloadFile("TomatoTimer.zip");
-                errorMessage.textContent = "";
-                errorMessage.style.color = "#6fffa0"; // Green color
-                errorMessage.textContent = "Valid key! Downloading file...";
-            } else {
-                // Show error message
-                errorMessage.style.color = "#ff6f6f"; // Red color
-                errorMessage.textContent = "Incorrect Key";
-            }
-        }
-        
-        // Function to check if the key is correct (simulated encryption verification)
-        function checkEncryptedKey(inputKey) {
-            return inputKey === atob("SmVyZW15MDIxNg==");
-        }
-        
-        // Function to download the file
-        function downloadFile(filename) {
-            const element = document.createElement('a');
-            element.setAttribute('href', 'data:application/zip;charset=utf-8,');
-            element.setAttribute('download', filename);
-            element.style.display = 'none';
-            document.body.appendChild(element);
-            element.click();
-            document.body.removeChild(element);
-        }
-        
-        // Redirect timer function
-        function startRedirectTimer() {
-            let timeLeft = 10;
-            redirectTimer.textContent = timeLeft;
-            
-            const countdownInterval = setInterval(() => {
-                timeLeft--;
-                redirectTimer.textContent = timeLeft;
-                
-                if (timeLeft <= 0) {
-                    clearInterval(countdownInterval);
-                    window.location.href = "https://discord.com/users/640015277156991005";
-                }
-            }, 1000);
-        }
-    </script>
+        // Draw dot
+        ctx.beginPath();
+        ctx.arc(dot.x, dot.y, dot.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${dot.opacity})`;
+        ctx.fill();
+      }
+      
+      requestAnimationFrame(animate);
+    }
+    
+    // Initialize with dots already on screen
+    animate();
+  </script>
 </body>
 </html>
