@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birdninja's App</title>
+    <link rel="icon" href="https://downloadr2.apkmirror.com/wp-content/uploads/2020/08/22/5f2da02573562.png" type="image/png">
+    <style>
+        :root {
+            --bg-color: #000;
+            --text-color: #fff;
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --text-tertiary: rgba(255, 255, 255, 0.6);
+            --card-bg: #111;
+            --button-gradient-start: #FF416C;
+            --button-gradient-end: #FF4B2B;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        header {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 24px;
+        }
+        
+        header h1 {
+            font-size: 5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            background: linear-gradient(to right, #fff, #888);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 24px;
+        }
+        
+        header p {
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin-bottom: 40px;
+        }
+        
+        .apple-button {
+            display: inline-block;
+            padding: 16px 36px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 30px;
+            border: none;
+            background: linear-gradient(135deg, var(--button-gradient-start), var(--button-gradient-end));
+            color: white;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 6px 24px rgba(255, 75, 43, 0.3);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .apple-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(255, 75, 43, 0.4);
+        }
+        
+        .description-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 100px 0;
+        }
+        
+        .description-container {
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .description-slide {
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            transition: opacity 0.8s ease;
+            pointer-events: none;
+        }
+        
+        .description-slide.active {
+            opacity: 1;
+            position: relative;
+            pointer-events: all;
+        }
+        
+        .description-content {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+        
+        .description-number {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            margin-bottom: 4px;
+        }
+        
+        .description-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            background: linear-gradient(to right, #fff, #aaa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.02em;
+        }
+        
+        .description-text {
+            font-size: 1.25rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            max-width: 800px;
+        }
+        
+        .navigation {
+            display: flex;
+            gap: 16px;
+            margin-top: 60px;
+        }
+        
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-dot.active {
+            background: white;
+            transform: scale(1.2);
+        }
+        
+        .comparison-section {
+            padding: 120px 0;
+        }
+        
+        .section-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 40px;
+            background: linear-gradient(to right, #fff, #aaa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.02em;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+        
+        .comparison-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 32px;
+            height: 100%;
+        }
+        
+        .comparison-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 16px;
+            background: linear-gradient(to right, #fff, #aaa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .feature-list {
+            list-style: none;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        .feature-check {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00c853, #009688);
+            margin-right: 12px;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .feature-cross {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff5252, #ff1744);
+            margin-right: 12px;
+            color: white;
+            font-weight: bold;
+        }
+        
+        /* Modal styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        
+        .modal.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .modal-content {
+            background: var(--card-bg);
+            width: 90%;
+            max-width: 900px;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.5);
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.95) translateY(30px);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .modal.show .modal-content {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+        
+        .modal-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #fff, #aaa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.02em;
+        }
+        
+        .close-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .close-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 40px 0;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        
+        .comparison-table th {
+            text-align: left;
+            padding: 16px 24px;
+            background: rgba(255, 255, 255, 0.05);
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 1.1rem;
+        }
+        
+        .comparison-table td {
+            padding: 16px 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 1.05rem;
+        }
+        
+        .comparison-table .feature-name {
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        
+        .check {
+            color: #00d68f;
+            font-size: 1.2rem;
+        }
+        
+        .cross {
+            color: #ff3b30;
+            font-size: 1.2rem;
+        }
+        
+        .download-container {
+            text-align: center;
+            margin-top: 60px;
+        }
+        
+        .download-text {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 80px 0 40px;
+            color: var(--text-tertiary);
+            font-size: 0.9rem;
+        }
+        
+        /* Animations */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        
+        .delay-1 {
+            animation-delay: 0.2s;
+        }
+        
+        .delay-2 {
+            animation-delay: 0.4s;
+        }
+        
+        .delay-3 {
+            animation-delay: 0.6s;
+        }
+        
+        /* Black and white buttons */
+        .bw-button {
+            display: inline-block;
+            padding: 14px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 30px;
+            border: 2px solid #fff;
+            background: #000;
+            color: white;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            text-align: center;
+            margin: 0 10px;
+        }
+        
+        .bw-button:hover {
+            background: #222;
+            transform: translateY(-2px);
+        }
+        
+        .bw-button-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 32px;
+        }
+        
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 3.5rem;
+            }
+            
+            .description-title {
+                font-size: 2rem;
+            }
+            
+            .description-text {
+                font-size: 1.1rem;
+            }
+            
+            .section-title {
+                font-size: 2.5rem;
+            }
+            
+            .modal-content {
+                padding: 24px;
+            }
+            
+            .modal-title {
+                font-size: 2rem;
+            }
+            
+            .bw-button-container {
+                flex-direction: column;
+                gap: 16px;
+            }
+            
+            .bw-button {
+                width: 100%;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 class="fade-in">Birdninja's App</h1>
+        <p class="fade-in delay-1">A better experience. Zero ads. Maximum privacy.</p>
+        <button id="getButton" class="apple-button fade-in delay-2">Get Now</button>
+    </header>
+    
+    <section class="description-section">
+        <div class="container">
+            <div class="description-container">
+                <div class="description-slide active" id="slide-1">
+                    <div class="description-content fade-in">
+                        <div>
+                            <div class="description-number">01</div>
+                            <h2 class="description-title">No More Splash Screens</h2>
+                            <p class="description-text">You've probably seen this stupid ad screen when you start the app, this is just annoying and the "Powered by Median.co" pissed me off each time because I MADE THE WEBSITE, and not them. But with the brand new custom app, there will be 100% no ad splash screens, when you start the app, it will automatically load you into the app in no time!</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="description-slide" id="slide-2">
+                    <div class="description-content">
+                        <div>
+                            <div class="description-number">02</div>
+                            <h2 class="description-title">Zero Advertisements</h2>
+                            <p class="description-text">As you know, this website is fully non-monetized and I will never post any kind of advertisements unless it's MY products, the greedy ass median.co dares to advertise their shitty ads in my app and not pay a single penny for me??? Fuck them! With the brand new app, there will be ZERO ads, there's even a built-in ad blocker to block external websites such as Manga Websites!</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="description-slide" id="slide-3">
+                    <div class="description-content">
+                        <div>
+                            <div class="description-number">03</div>
+                            <h2 class="description-title">Optimized Storage Usage</h2>
+                            <p class="description-text">Optimization is a key for apps to run on old devices, the old app uses ~35MB for just a single website-based app, those motherfucker median.co employees do not just deploy scam ads on my app, they don't even bother to optimize their app, 22MB of cache for a session, are you serious? The new app beats the fuck out of them because the base app size is significantly less than the original app with just 4MB and also automatically clears the cache after each time you enter the app!</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="description-slide" id="slide-4">
+                    <div class="description-content">
+                        <div>
+                            <div class="description-number">04</div>
+                            <h2 class="description-title">Your Data, Your Choice</h2>
+                            <p class="description-text">Your data is yours and it's your privacy, although there's no proof of that median.co sells the data, but I'm pretty sure they will use your data wisely, the new app will clear out your concerns because the app is custom built and I don't even have any access to your app because I can't find any storage to store your data LOL!</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="navigation">
+                    <div class="nav-dot active" data-slide="1"></div>
+                    <div class="nav-dot" data-slide="2"></div>
+                    <div class="nav-dot" data-slide="3"></div>
+                    <div class="nav-dot" data-slide="4"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="comparison-section">
+        <div class="container">
+            <h2 class="section-title">App Comparison</h2>
+            
+            <div class="comparison-grid">
+                <div class="comparison-card">
+                    <h3>Median.Co Based App</h3>
+                    <ul class="feature-list">
+                        <li class="feature-item"><span class="feature-check">✓</span> FREE</li>
+                        <li class="feature-item"><span class="feature-check">✓</span> Easy To Use</li>
+                        <li class="feature-item"><span class="feature-check">✓</span> Instant Updates</li>
+                        <li class="feature-item"><span class="feature-cross">✗</span> No Ads</li>
+                        <li class="feature-item"><span class="feature-cross">✗</span> Built-In Ad Blocker</li>
+                        <li class="feature-item"><span class="feature-cross">✗</span> No Splash Screens</li>
+                        <li class="feature-item"><span class="feature-cross">✗</span> Storage Optimization</li>
+                        <li class="feature-item"><span class="feature-cross">✗</span> Secure Data</li>
+                    </ul>
+                </div>
+                
+                <div class="comparison-card">
+                    <h3>Custom Built App</h3>
+                    <ul class="feature-list">
+                        <li class="feature-item"><span class="feature-check">✓</span> FREE</li>
+                        <li class="feature-item"><span class="feature-check">✓</span> Easy To Use</li>
+                        <li class="feature-item"><span class="feature-check">✓</span> Instant Updates</li>
+                        <li class="feature-item"><span class="feature-check">✓</span> No Ads</li>
+                        <li class="feature-item"><span class="feature-check">✓</span> Built-In Ad Blocker</li>
+                        <li class="feature-item"><span class="feature-check">✓</span> No Splash Screens</li>
+                        <li class="feature-item"><span class="feature-check">✓</span> Storage Optimization</li>
+                        <li class="feature-item"><span class="feature-check">✓</span> Secure Data</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="download-container">
+                <p class="download-text">Ready to upgrade your experience?</p>
+                <button id="downloadButton" class="apple-button">Download Now</button>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <p>© 2025 Birdninja's App. All rights reserved.</p>
+    </footer>
+    
+    <!-- Get Now Modal -->
+    <div id="appModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">App Comparison</h2>
+                <button id="closeModal" class="close-button">×</button>
+            </div>
+            
+            <p class="description-text">See why our custom-built app is superior to the median.co version in every way:</p>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Median.Co Based App</th>
+                        <th>Custom Built App</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="feature-name">FREE</td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Easy To Use</td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Instant Updates</td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">No Ads</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Built-In Ad Blocker</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">No Splash Screens</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Storage Optimization</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Secure Data</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">App Size</td>
+                        <td>~35MB</td>
+                        <td>~4MB</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Cache Usage</td>
+                        <td>~22MB per session</td>
+                        <td>Auto-clearing</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="bw-button-container">
+                <a href="app/url_1" class="bw-button">Get Median.co Version</a>
+                <a href="app/url_2" class="bw-button">Get Custom Version</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Download Now Modal -->
+    <div id="downloadModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Choose Your Version</h2>
+                <button id="closeDownloadModal" class="close-button">×</button>
+            </div>
+            
+            <p class="description-text">Choose which version you want to download:</p>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Median.Co Based App</th>
+                        <th>Custom Built App</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="feature-name">FREE</td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Easy To Use</td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Instant Updates</td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">No Ads</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Built-In Ad Blocker</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">No Splash Screens</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Storage Optimization</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Secure Data</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">App Size</td>
+                        <td>~35MB</td>
+                        <td>~4MB</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Cache Usage</td>
+                        <td>~22MB per session</td>
+                        <td>Auto-clearing</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="bw-button-container">
+                <a href="url_1" class="bw-button">Download Median.co Version</a>
+                <a href="url_2" class="bw-button">Download Custom Version</a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Slide navigation
+        const slides = document.querySelectorAll('.description-slide');
+        const dots = document.querySelectorAll('.nav-dot');
+        let currentSlide = 0;
+        const totalSlides = slides.length;
+        
+        function showSlide(index) {
+            // Hide all slides
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+            
+            // Deactivate all dots
+            dots.forEach(dot => {
+                dot.classList.remove('active');
+            });
+            
+            // Show current slide and activate dot
+            slides[index].classList.add('active');
+            dots[index].classList.add('active');
+            
+            currentSlide = index;
+        }
+        
+        // Add click event to dots
+        dots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                const slideIndex = parseInt(dot.getAttribute('data-slide')) - 1;
+                showSlide(slideIndex);
+            });
+        });
+        
+        // Auto slide change
+        let slideInterval = setInterval(() => {
+            let nextSlide = (currentSlide + 1) % totalSlides;
+            showSlide(nextSlide);
+        }, 6000);
+        
+        // Reset interval on manual navigation
+        dots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                clearInterval(slideInterval);
+                slideInterval = setInterval(() => {
+                    let nextSlide = (currentSlide + 1) % totalSlides;
+                    showSlide(nextSlide);
+                }, 6000);
+            });
+        });
+        
+        // Modal functionality
+        const getModal = document.getElementById('appModal');
+        const downloadModal = document.getElementById('downloadModal');
+        const getButton = document.getElementById('getButton');
+        const downloadButton = document.getElementById('downloadButton');
+        const closeModal = document.getElementById('closeModal');
+        const closeDownloadModal = document.getElementById('closeDownloadModal');
+        
+        getButton.addEventListener('click', () => {
+            getModal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        });
+        
+        downloadButton.addEventListener('click', () => {
+            downloadModal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        });
+        
+        closeModal.addEventListener('click', () => {
+            getModal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        });
+        
+        closeDownloadModal.addEventListener('click', () => {
+            downloadModal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        });
+        
+        window.addEventListener('click', (e) => {
+            if (e.target === getModal) {
+                getModal.classList.remove('show');
+                document.body.style.overflow = 'auto';
+            } else if (e.target === downloadModal) {
+                downloadModal.classList.remove('show');
+                document.body.style.overflow = 'auto';
+            }
+        });
+        
+        // Animation on scroll
+        const animateOnScroll = () => {
+            const scrollElements = document.querySelectorAll('.description-section, .comparison-section');
+            const elementInView = (el, scrollOffset = 0) => {
+                const elementTop = el.getBoundingClientRect().top;
+                return (
+                    elementTop <= 
+                    (window.innerHeight || document.documentElement.clientHeight) * 0.8
+                );
+            };
+            
+            scrollElements.forEach((el) => {
+                if (elementInView(el, 100)) {
+                    el.classList.add('in-view');
+                    
+                    // Add animation class to children
+                    const animElements = el.querySelectorAll('.description-content > div, .comparison-card, .download-container');
+                    animElements.forEach((elem, index) => {
+                        setTimeout(() => {
+                            elem.classList.add('fade-in');
+                        }, index * 200);
+                    });
+                }
+            });
+        };
+        
+        window.addEventListener('scroll', animateOnScroll);
+        window.addEventListener('load', animateOnScroll);
+    </script>
+    
+    <!-- Custom style sheet -->
+    <link rel="stylesheet" href="your_url_here_2">
+</body>
+</html>
